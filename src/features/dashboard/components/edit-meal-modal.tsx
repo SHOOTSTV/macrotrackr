@@ -16,6 +16,7 @@ interface EditMealModalProps {
 export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState(meal.title);
   const [kcal, setKcal] = useState(String(meal.kcal));
@@ -61,6 +62,39 @@ export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
     }
   }
 
+  async function onDelete() {
+    const confirmed = window.confirm("Delete this meal permanently?");
+    if (!confirmed) {
+      return;
+    }
+
+    setDeleting(true);
+    setError(null);
+
+    try {
+      const authHeaders = await getAuthHeaders();
+      const response = await fetch(`/api/meals/${meal.id}`, {
+        method: "DELETE",
+        headers: {
+          "x-dashboard-ui": "1",
+          ...authHeaders,
+        },
+      });
+
+      if (!response.ok) {
+        const payload = (await response.json()) as { message?: string };
+        throw new Error(payload.message ?? "Failed to delete meal");
+      }
+
+      await onUpdated();
+      setOpen(false);
+    } catch (deleteError) {
+      setError(deleteError instanceof Error ? deleteError.message : "Unexpected error");
+    } finally {
+      setDeleting(false);
+    }
+  }
+
   if (!open) {
     return (
       <Button variant="ghost" onClick={() => setOpen(true)}>
@@ -94,10 +128,18 @@ export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
         </div>
         <div className="mt-4 flex gap-2">
-          <Button onClick={onSubmit} disabled={saving}>
+          <Button onClick={onSubmit} disabled={saving || deleting}>
             {saving ? "Saving..." : "Save"}
           </Button>
-          <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving}>
+          <Button
+            variant="ghost"
+            onClick={onDelete}
+            disabled={saving || deleting}
+            className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
+          >
+            {deleting ? "Deleting..." : "Delete meal"}
+          </Button>
+          <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving || deleting}>
             Cancel
           </Button>
         </div>
