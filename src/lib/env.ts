@@ -4,6 +4,7 @@ const envSchema = z.object({
   NEXT_PUBLIC_SUPABASE_URL: z.string().url(),
   NEXT_PUBLIC_SUPABASE_ANON_KEY: z.string().min(1),
   SUPABASE_SERVICE_ROLE_KEY: z.string().min(1),
+  INGEST_SECRET: z.string().min(1).optional(),
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().min(1).optional(),
 });
@@ -14,16 +15,18 @@ if (!envResult.success) {
   throw new Error(
     `Invalid environment variables: ${envResult.error.issues
       .map((issue) => issue.path.join("."))
-      .join(", ")}`,
+      .join(", ")}`
   );
 }
 
 if (
-  (envResult.data.UPSTASH_REDIS_REST_URL && !envResult.data.UPSTASH_REDIS_REST_TOKEN) ||
-  (!envResult.data.UPSTASH_REDIS_REST_URL && envResult.data.UPSTASH_REDIS_REST_TOKEN)
+  (envResult.data.UPSTASH_REDIS_REST_URL &&
+    !envResult.data.UPSTASH_REDIS_REST_TOKEN) ||
+  (!envResult.data.UPSTASH_REDIS_REST_URL &&
+    envResult.data.UPSTASH_REDIS_REST_TOKEN)
 ) {
   throw new Error(
-    "Invalid environment variables: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must both be set",
+    "Invalid environment variables: UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN must both be set"
   );
 }
 
