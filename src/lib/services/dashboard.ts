@@ -28,13 +28,15 @@ const emptySummary = (userId: string, date: string): DailySummary => ({
 });
 
 export async function getDayDashboard(userId: string, date: string): Promise<DayDashboardPayload> {
-  const meals = await listMealsForDate(userId, date);
-  const { data, error } = await supabaseAdmin
-    .from("daily_summary")
-    .select("*")
-    .eq("user_id", userId)
-    .eq("day", date)
-    .maybeSingle();
+  const [meals, { data, error }] = await Promise.all([
+    listMealsForDate(userId, date),
+    supabaseAdmin
+      .from("daily_summary")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("day", date)
+      .maybeSingle(),
+  ]);
 
   if (error) {
     throw new Error(error.message);
@@ -52,14 +54,16 @@ export async function getRangeDashboard(
   from: string,
   to: string,
 ): Promise<RangeDashboardPayload> {
-  const meals = await listMealsForRange(userId, from, to);
-  const { data, error } = await supabaseAdmin
-    .from("daily_summary")
-    .select("*")
-    .eq("user_id", userId)
-    .gte("day", from)
-    .lte("day", to)
-    .order("day", { ascending: true });
+  const [meals, { data, error }] = await Promise.all([
+    listMealsForRange(userId, from, to),
+    supabaseAdmin
+      .from("daily_summary")
+      .select("*")
+      .eq("user_id", userId)
+      .gte("day", from)
+      .lte("day", to)
+      .order("day", { ascending: true }),
+  ]);
 
   if (error) {
     throw new Error(error.message);
