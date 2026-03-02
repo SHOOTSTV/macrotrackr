@@ -11,6 +11,7 @@ AI-first nutrition tracking MVP with fast meal logging, clean dashboards, and se
 ## Why MacroTrackr
 
 - **Fast capture flow**: add meals instantly (AI/manual), no pending queue.
+- **Full meal management**: edit or delete individual meals, or clear an entire day from the dashboard.
 - **Useful dashboards**: daily totals, multi-day history, goal progress.
 - **Secure by default**: authenticated APIs + Row Level Security + schema validation.
 - **MVP-friendly architecture**: simple vertical slices, easy to iterate.
@@ -74,6 +75,7 @@ Required in `.env.local`:
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public anon key (client) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service role key (server only) |
+| `APP_TIME_ZONE` | Optional | IANA time zone for date-bound queries (default: `Europe/Paris`) |
 | `UPSTASH_REDIS_REST_URL` | Optional | Redis URL for persistent rate limit |
 | `UPSTASH_REDIS_REST_TOKEN` | Optional | Redis token for persistent rate limit |
 
@@ -143,6 +145,8 @@ pnpm seed
 
 - `POST /api/meals` - create meal (AI/manual)
 - `PATCH /api/meals/:id` - update meal (dashboard-only via `x-dashboard-ui: 1`)
+- `DELETE /api/meals/:id` - delete single meal (dashboard-only via `x-dashboard-ui: 1`)
+- `DELETE /api/meals/day?date=YYYY-MM-DD` - delete all meals for a date (dashboard-only via `x-dashboard-ui: 1`)
 - `GET /api/dashboard/day?date=YYYY-MM-DD`
 - `GET /api/dashboard/range?from=YYYY-MM-DD&to=YYYY-MM-DD`
 - `GET /api/profile/goals`
