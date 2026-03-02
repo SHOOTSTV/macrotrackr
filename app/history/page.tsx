@@ -4,19 +4,37 @@ import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { Card } from "@/src/components/ui/card";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
-import { HistoryChart } from "@/src/features/dashboard/components/history-chart";
+import { HistoryChartLazy } from "@/src/features/dashboard/components/history-chart-lazy";
+import { HistoryDatePicker } from "@/src/features/dashboard/components/history-date-picker";
 import { HistoryDayGroups } from "@/src/features/dashboard/components/history-day-groups";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { getRangeDashboard } from "@/src/lib/services/dashboard";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
 
-export default async function HistoryPage() {
-  const userId = await requireServerUserId();
-  const to = formatISO(new Date(), { representation: "date" });
-  const from = formatISO(subDays(new Date(to), 4), { representation: "date" });
+const DEFAULT_DAYS = 7;
 
-  const dashboard = await getRangeDashboard(userId, from, to);
-  const goals = await getNutritionGoals(userId);
+interface HistoryPageProps {
+  searchParams: Promise<{ from?: string; to?: string }>;
+}
+
+function clampDate(date: string, max: string): string {
+  return date > max ? max : date;
+}
+
+export default async function HistoryPage({ searchParams }: HistoryPageProps) {
+  const userId = await requireServerUserId();
+  const params = await searchParams;
+
+  const today = formatISO(new Date(), { representation: "date" });
+  const to = params.to ? clampDate(params.to, today) : today;
+  const from = params.from && params.from <= to
+    ? params.from
+    : formatISO(subDays(new Date(to), DEFAULT_DAYS - 1), { representation: "date" });
+
+  const [dashboard, goals] = await Promise.all([
+    getRangeDashboard(userId, from, to),
+    getNutritionGoals(userId),
+  ]);
   const latestDay = dashboard.days[dashboard.days.length - 1];
 
   return (
@@ -30,17 +48,16 @@ export default async function HistoryPage() {
             <h1 className="text-3xl font-bold text-slate-900">
               Nutrition Dashboard
             </h1>
-            <p className="text-sm text-slate-600">
-              User: <span className="font-medium">{userId}</span> - {from} to{" "}
-              {to}
-            </p>
           </div>
           <DashboardNav />
+        </div>
+        <div className="mt-4">
+          <HistoryDatePicker from={from} to={to} />
         </div>
       </header>
 
       <ManualMealForm />
-      <HistoryChart days={dashboard.days} />
+      <HistoryChartLazy days={dashboard.days} />
       <Card>
         <h2 className="mb-3 text-lg font-semibold text-slate-900">
           Latest day summary

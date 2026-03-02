@@ -13,8 +13,10 @@ export default async function TodayPage() {
   const userId = await requireServerUserId();
   const date = formatISO(new Date(), { representation: "date" });
 
-  const dashboard = await getDayDashboard(userId, date);
-  const goals = await getNutritionGoals(userId);
+  const [dashboard, goals] = await Promise.all([
+    getDayDashboard(userId, date),
+    getNutritionGoals(userId),
+  ]);
 
   return (
     <main className="app-shell space-y-6">
