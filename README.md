@@ -25,6 +25,7 @@ AI-first nutrition tracking MVP with fast meal logging, clean dashboards, and se
 - [Project Structure](#project-structure)
 - [Scripts](#scripts)
 - [Routes](#routes)
+- [Ingest API (External AI Agent)](#ingest-api-external-ai-agent)
 - [Security Notes](#security-notes)
 - [RLS Verification](#rls-verification)
 - [Release Checklist](#release-checklist)
@@ -75,6 +76,7 @@ Required in `.env.local`:
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Public anon key (client) |
 | `SUPABASE_SERVICE_ROLE_KEY` | Yes | Service role key (server only) |
+| `INGEST_SECRET` | Optional | Shared secret for the external meal ingest API (`x-ingest-key` header) |
 | `APP_TIME_ZONE` | Optional | IANA time zone for date-bound queries (default: `Europe/Paris`) |
 | `UPSTASH_REDIS_REST_URL` | Optional | Redis URL for persistent rate limit |
 | `UPSTASH_REDIS_REST_TOKEN` | Optional | Redis token for persistent rate limit |
@@ -144,6 +146,7 @@ pnpm seed
 ### API routes
 
 - `POST /api/meals` - create meal (AI/manual)
+- `POST /api/meals/ingest` - create meal from external source (authenticated via `x-ingest-key` header)
 - `PATCH /api/meals/:id` - update meal (dashboard-only via `x-dashboard-ui: 1`)
 - `DELETE /api/meals/:id` - delete single meal (dashboard-only via `x-dashboard-ui: 1`)
 - `DELETE /api/meals/day?date=YYYY-MM-DD` - delete all meals for a date (dashboard-only via `x-dashboard-ui: 1`)
@@ -152,21 +155,102 @@ pnpm seed
 - `GET /api/profile/goals`
 - `PUT /api/profile/goals`
 
-Auth header required for protected APIs:
+Auth header required for session-protected APIs:
 
 `Authorization: Bearer <access_token>`
+
+The ingest endpoint uses a shared secret instead of user sessions:
+
+`x-ingest-key: <INGEST_SECRET>`
 
 ### Route guard behavior
 
 - `/today`, `/history`, `/profile` -> redirect to `/auth` if no session.
 - `/auth` -> redirect to `/today` when session is active.
 
+## Ingest API (External AI Agent)
+
+The ingest endpoint (`POST /api/meals/ingest`) lets an external AI agent push meals into MacroTrackr on behalf of a user, without needing the user's session token.
+
+### How it works
+
+```text
+┌──────────┐    photo     ┌──────────────┐   POST /api/meals/ingest   ┌──────────────┐
+│          │  ─────────►  │              │  ────────────────────────►  │              │
+│   User   │              │   AI Agent   │    x-ingest-key + JSON     │  MacroTrackr │
+│          │  ◄─────────  │              │  ◄────────────────────────  │              │
+└──────────┘   summary    └──────────────┘        201 Created         └──────────────┘
+```
+
+1. **User sends a photo** of their meal to an external AI agent (chatbot, mobile app, Shortcut, etc.).
+2. **The AI agent analyzes the image** and extracts nutritional data (title, calories, macros).
+3. **The agent POSTs to `/api/meals/ingest`** with:
+   - `x-ingest-key` header set to the shared `INGEST_SECRET`.
+   - A JSON body containing the user's `user_id` (UUID) and the extracted nutrition fields.
+4. **MacroTrackr validates** the secret (timing-safe), parses the payload with Zod, and inserts the meal via the service-role Supabase client.
+5. **The meal appears instantly** on the user's `/today` dashboard.
+
+### Prerequisites for the AI agent
+
+| What the agent needs | Where it comes from |
+|---|---|
+| `INGEST_SECRET` | Set in `.env.local`, shared with the agent securely |
+| User `user_id` (UUID) | Provided by the user or resolved from their profile |
+
+### Example request
+
+```bash
+curl -X POST https://your-app.vercel.app/api/meals/ingest \
+  -H "Content-Type: application/json" \
+  -H "x-ingest-key: YOUR_INGEST_SECRET" \
+  -d '{
+    "user_id": "550e8400-e29b-41d4-a716-446655440000",
+    "title": "Grilled chicken salad",
+    "kcal": 420,
+    "protein_g": 38,
+    "carbs_g": 22,
+    "fat_g": 18,
+    "meal_type": "lunch",
+    "author": "ai",
+    "source_detail": "chatgpt-vision",
+    "confidence": 0.85,
+    "notes": "Photo analysis — dressing estimated"
+  }'
+```
+
+### Payload reference
+
+| Field | Type | Required | Description |
+|---|---|---|---|
+| `user_id` | `string` (UUID) | Yes | Target user |
+| `title` | `string` | Yes | Meal name (1-180 chars) |
+| `kcal` | `number` | Yes | Calories (0-10 000) |
+| `protein_g` | `number` | Yes | Protein in grams (0-500) |
+| `carbs_g` | `number` | Yes | Carbs in grams (0-1 000) |
+| `fat_g` | `number` | Yes | Fat in grams (0-500) |
+| `eaten_at` | `string` (ISO 8601 with offset) | No | Defaults to now |
+| `meal_type` | `"breakfast"` \| `"lunch"` \| `"dinner"` \| `"snack"` | No | Defaults to `"snack"` |
+| `author` | `"ai"` \| `"manual"` | No | Defaults to `"manual"` |
+| `source_detail` | `string` | No | Free-form origin tag (e.g. `"chatgpt-vision"`) |
+| `confidence` | `number` (0-1) \| `null` | No | AI confidence score |
+| `notes` | `string` | No | Extra context (max 800 chars) |
+
+### Error responses
+
+| Status | Meaning |
+|---|---|
+| `400` | Invalid JSON or Zod validation failure |
+| `401` | Missing or incorrect `x-ingest-key` |
+| `429` | Rate limited |
+| `500` | Server error (e.g. `INGEST_SECRET` not configured) |
+
 ## Security Notes
 
 - `SUPABASE_SERVICE_ROLE_KEY` is server-only.
-- API payloads are validated with Zod.
+- API payloads are validated with Zod (strict schemas reject unknown fields).
 - Rate limiting uses Upstash Redis with local-memory fallback.
 - RLS is enforced via `user_id` policies in `supabase/schema.sql`.
+- The ingest endpoint authenticates via `INGEST_SECRET` using timing-safe comparison to prevent timing attacks.
 
 ## RLS Verification
 
