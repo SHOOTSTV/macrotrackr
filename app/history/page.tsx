@@ -8,6 +8,7 @@ import { HistoryChartLazy } from "@/src/features/dashboard/components/history-ch
 import { HistoryDatePicker } from "@/src/features/dashboard/components/history-date-picker";
 import { HistoryDayGroups } from "@/src/features/dashboard/components/history-day-groups";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
+import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
 import { getRangeDashboard } from "@/src/lib/services/dashboard";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
 
@@ -57,6 +58,7 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
       </header>
 
       <ManualMealForm />
+      <StreakWeeklyCard mode="history" />
       <HistoryChartLazy days={dashboard.days} />
       <Card>
         <h2 className="mb-3 text-lg font-semibold text-slate-900">
