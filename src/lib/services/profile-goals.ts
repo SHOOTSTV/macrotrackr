@@ -6,6 +6,7 @@ const DEFAULT_GOALS: Omit<NutritionGoalsInput, "user_id"> = {
   protein_g_target: 140,
   carbs_g_target: 250,
   fat_g_target: 70,
+  weekly_target: 7,
 };
 
 export async function getNutritionGoals(userId: string): Promise<NutritionGoals | null> {
@@ -37,11 +38,12 @@ export async function getNutritionGoalsOrDefault(userId: string): Promise<Nutrit
     protein_g_target: goals.protein_g_target,
     carbs_g_target: goals.carbs_g_target,
     fat_g_target: goals.fat_g_target,
+    weekly_target: goals.weekly_target,
   };
 }
 
 export async function upsertNutritionGoals(
-  input: Omit<NutritionGoalsInput, "user_id">,
+  input: Omit<NutritionGoalsInput, "user_id" | "weekly_target">,
   userId: string,
 ): Promise<NutritionGoals> {
   const { data, error } = await supabaseAdmin
