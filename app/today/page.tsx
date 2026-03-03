@@ -5,6 +5,7 @@ import { DayTotals } from "@/src/features/dashboard/components/day-totals";
 import { GoalsProgressCard } from "@/src/features/dashboard/components/goals-progress-card";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { MealList } from "@/src/features/dashboard/components/meal-list";
+import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
@@ -13,8 +14,10 @@ export default async function TodayPage() {
   const userId = await requireServerUserId();
   const date = formatISO(new Date(), { representation: "date" });
 
-  const dashboard = await getDayDashboard(userId, date);
-  const goals = await getNutritionGoals(userId);
+  const [dashboard, goals] = await Promise.all([
+    getDayDashboard(userId, date),
+    getNutritionGoals(userId),
+  ]);
 
   return (
     <main className="app-shell space-y-6">
@@ -36,6 +39,7 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm />
+      <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
         consumed={{

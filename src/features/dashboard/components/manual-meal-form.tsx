@@ -66,10 +66,12 @@ export function ManualMealForm() {
 
     try {
       const authHeaders = await getAuthHeaders();
+      const idempotencyKey = `meal:${crypto.randomUUID()}`;
       const response = await fetch("/api/meals", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "Idempotency-Key": idempotencyKey,
           ...authHeaders,
         },
         body: JSON.stringify(payload),

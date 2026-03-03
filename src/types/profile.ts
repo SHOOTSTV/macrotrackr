@@ -4,6 +4,7 @@ export interface NutritionGoals {
   protein_g_target: number;
   carbs_g_target: number;
   fat_g_target: number;
+  weekly_target: number;
   created_at: string;
   updated_at: string;
 }
@@ -14,4 +15,5 @@ export interface NutritionGoalsInput {
   protein_g_target: number;
   carbs_g_target: number;
   fat_g_target: number;
+  weekly_target: number;
 }
