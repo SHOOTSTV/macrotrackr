@@ -1,7 +1,8 @@
 import type { PostgrestError } from "@supabase/supabase-js";
 
-import type { CreateMealInput, PatchMealInput } from "@/src/lib/validators/meals";
+import { synchronizeUserProgress } from "@/src/lib/services/progress-sync";
 import { supabaseAdmin } from "@/src/lib/supabase/admin";
+import type { CreateMealInput, PatchMealInput } from "@/src/lib/validators/meals";
 import type { Meal } from "@/src/types/meal";
 
 const APP_TIME_ZONE = process.env.APP_TIME_ZONE ?? "Europe/Paris";
@@ -45,22 +46,59 @@ function getDateBoundsInAppTimeZone(date: string): { from: string; to: string } 
   };
 }
 
-export async function createMeal(input: CreateMealInput, userId: string): Promise<Meal> {
+export interface CreateMealResult {
+  meal: Meal;
+  replayed: boolean;
+}
+
+export async function createMeal(
+  input: CreateMealInput,
+  userId: string,
+  idempotencyKey?: string,
+): Promise<CreateMealResult> {
   const { data: meal, error: mealError } = await supabaseAdmin
     .from("meals")
     .insert({
       ...input,
       user_id: userId,
       notes: input.notes ?? "",
+      idempotency_key: idempotencyKey ?? null,
     })
     .select("*")
     .single();
 
-  if (mealError || !meal) {
-    throw toServiceError(mealError, "Failed to insert meal");
+  if (meal) {
+    await synchronizeUserProgress(userId);
+
+    return {
+      meal: await getMealById(meal.id, userId),
+      replayed: false,
+    };
   }
 
-  return getMealById(meal.id, userId);
+  if (
+    mealError?.code === "23505"
+    && mealError?.message.includes("meals_user_id_idempotency_key_key")
+    && idempotencyKey
+  ) {
+    const { data: existingMeal, error: existingMealError } = await supabaseAdmin
+      .from("meals")
+      .select("*")
+      .eq("user_id", userId)
+      .eq("idempotency_key", idempotencyKey)
+      .single();
+
+    if (existingMealError || !existingMeal) {
+      throw toServiceError(existingMealError, "Failed to fetch idempotent meal");
+    }
+
+    return {
+      meal: existingMeal as Meal,
+      replayed: true,
+    };
+  }
+
+  throw toServiceError(mealError, "Failed to insert meal");
 }
 
 export async function patchMeal(
@@ -83,6 +121,10 @@ export async function patchMeal(
     throw toServiceError(mealError, "Meal not found or update failed");
   }
 
+  if (input.eaten_at) {
+    await synchronizeUserProgress(userId);
+  }
+
   return getMealById(mealId, userId);
 }
 
@@ -102,6 +144,8 @@ export async function deleteMealById(mealId: string, userId: string): Promise<vo
   if (!data) {
     throw new Error("Meal not found");
   }
+
+  await synchronizeUserProgress(userId);
 }
 
 export async function deleteMealsForDate(userId: string, date: string): Promise<number> {
@@ -117,6 +161,10 @@ export async function deleteMealsForDate(userId: string, date: string): Promise<
 
   if (error) {
     throw toServiceError(error, "Unable to delete meals for date");
+  }
+
+  if ((data?.length ?? 0) > 0) {
+    await synchronizeUserProgress(userId);
   }
 
   return data?.length ?? 0;
