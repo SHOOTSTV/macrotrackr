@@ -16,6 +16,7 @@ export interface Meal {
   confidence: number | null;
   low_confidence: boolean;
   notes: string | null;
+  idempotency_key: string | null;
   updated_from_dashboard: boolean;
   created_at: string;
   updated_at: string;

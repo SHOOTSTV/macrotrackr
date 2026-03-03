@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const meal = await createMeal(
+    const { meal } = await createMeal(
       {
         title: parsed.data.title,
         kcal: parsed.data.kcal,
