@@ -1,10 +1,10 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
 import { Button } from "@/src/components/ui/button";
-import { Card } from "@/src/components/ui/card";
 import { getAuthHeaders } from "@/src/lib/auth/client-auth";
 import type { CopyMealCandidate } from "@/src/types/meal";
 
@@ -22,9 +22,11 @@ function sourceLabel(source: CopyMealCandidate["source"]): string {
 
 export function CopyPreviousMeals({ candidates }: CopyPreviousMealsProps) {
   const router = useRouter();
+  const [loadingMealId, setLoadingMealId] = useState<string | null>(null);
 
   async function copyMeal(mealId: string) {
     try {
+      setLoadingMealId(mealId);
       const authHeaders = await getAuthHeaders();
       const response = await fetch("/api/meals/copy-previous", {
         method: "POST",
@@ -43,18 +45,17 @@ export function CopyPreviousMeals({ candidates }: CopyPreviousMealsProps) {
       router.refresh();
     } catch {
       toast.error("Unable to copy meal");
+    } finally {
+      setLoadingMealId(null);
     }
   }
 
   return (
-    <Card className="space-y-3">
-      <div>
-        <h2 className="text-lg font-semibold text-slate-900">Copy previous meal</h2>
-        <p className="text-sm text-slate-600">One click from yesterday or last week.</p>
-      </div>
-
+    <div className="space-y-3">
       {candidates.length === 0 ? (
-        <p className="text-sm text-slate-500">No previous meals available yet.</p>
+        <p className="text-sm text-slate-500">
+          No previous meals available yet.
+        </p>
       ) : (
         <div className="space-y-2">
           {candidates.map((candidate) => (
@@ -63,18 +64,30 @@ export function CopyPreviousMeals({ candidates }: CopyPreviousMealsProps) {
               className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/90 px-3 py-2"
             >
               <div>
-                <p className="font-medium text-slate-900">{candidate.meal.title}</p>
+                <p className="font-medium text-slate-900">
+                  {candidate.meal.title}
+                </p>
                 <p className="text-xs text-slate-500">
-                  {sourceLabel(candidate.source)} • {candidate.meal.meal_type} • {candidate.meal.kcal} kcal
+                  {sourceLabel(candidate.source)} • {candidate.meal.meal_type} •{" "}
+                  {candidate.meal.kcal} kcal
                 </p>
               </div>
-              <Button type="button" onClick={() => void copyMeal(candidate.meal.id)}>
-                Copy
+              <Button
+                type="button"
+                disabled={loadingMealId === candidate.meal.id}
+                className={
+                  loadingMealId === candidate.meal.id
+                    ? "scale-[0.98] opacity-80"
+                    : undefined
+                }
+                onClick={() => void copyMeal(candidate.meal.id)}
+              >
+                {loadingMealId === candidate.meal.id ? "Copying..." : "Copy"}
               </Button>
             </div>
           ))}
         </div>
       )}
-    </Card>
+    </div>
   );
 }

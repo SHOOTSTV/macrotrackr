@@ -1,7 +1,6 @@
 import { formatISO, subDays } from "date-fns";
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
-import { CopyPreviousMeals } from "@/src/features/dashboard/components/copy-previous-meals";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
 import { GoalsProgressCard } from "@/src/features/dashboard/components/goals-progress-card";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
@@ -44,8 +43,7 @@ export default async function TodayPage() {
           <DashboardNav />
         </div>
       </header>
-      <ManualMealForm />
-      <CopyPreviousMeals candidates={copyCandidates} />
+      <ManualMealForm copyCandidates={copyCandidates} />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
