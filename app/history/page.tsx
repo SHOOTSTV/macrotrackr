@@ -1,7 +1,7 @@
 import { formatISO, subDays } from "date-fns";
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
-import { requireServerUserId } from "@/src/lib/auth/server-session";
+import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { Card } from "@/src/components/ui/card";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
 import { HistoryChartLazy } from "@/src/features/dashboard/components/history-chart-lazy";
@@ -23,7 +23,7 @@ function clampDate(date: string, max: string): string {
 }
 
 export default async function HistoryPage({ searchParams }: HistoryPageProps) {
-  const userId = await requireServerUserId();
+  const userId = await requireServerUserIdWithOnboarding();
   const params = await searchParams;
 
   const today = formatISO(new Date(), { representation: "date" });

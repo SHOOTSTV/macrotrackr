@@ -1,10 +1,10 @@
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
-import { requireServerUserId } from "@/src/lib/auth/server-session";
+import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { GoalsForm } from "@/src/features/profile/components/goals-form";
 import { getNutritionGoalsOrDefault } from "@/src/lib/services/profile-goals";
 
 export default async function ProfilePage() {
-  const userId = await requireServerUserId();
+  const userId = await requireServerUserIdWithOnboarding();
   const goals = await getNutritionGoalsOrDefault(userId);
 
   return (
