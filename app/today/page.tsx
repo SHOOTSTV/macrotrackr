@@ -7,24 +7,30 @@ import { MacroOverrunAlerts } from "@/src/features/dashboard/components/macro-ov
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { MealSearchFavorites } from "@/src/features/dashboard/components/meal-search-favorites";
+import { SmartMealReminderCard } from "@/src/features/dashboard/components/smart-meal-reminder";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
-import { listMealsForCopyCandidates } from "@/src/lib/services/meals";
+import { detectSmartMealReminder } from "@/src/lib/services/meal-reminders";
+import { listMealsForCopyCandidates, listMealsForRange } from "@/src/lib/services/meals";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
 
-export default async function TodayPage() {  
+export default async function TodayPage() {
   const userId = await requireServerUserIdWithOnboarding();
   const now = new Date();
   const date = formatISO(now, { representation: "date" });
   const yesterdayDate = formatISO(subDays(now, 1), { representation: "date" });
-  const lastWeekDate = formatISO(subDays(now, 7), { representation: "date" });  
-  
-  const [dashboard, goals, copyCandidates] = await Promise.all([
+  const lastWeekDate = formatISO(subDays(now, 7), { representation: "date" });
+  const recentFromDate = formatISO(subDays(now, 14), { representation: "date" });
+
+  const [dashboard, goals, copyCandidates, recentMeals] = await Promise.all([
     getDayDashboard(userId, date),
     getNutritionGoals(userId),
     listMealsForCopyCandidates(userId, yesterdayDate, lastWeekDate),
+    listMealsForRange(userId, recentFromDate, date),
   ]);
+
+  const smartReminder = detectSmartMealReminder(recentMeals, dashboard.meals, now);
 
   return (
     <main className="app-shell space-y-6">
@@ -46,7 +52,6 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm copyCandidates={copyCandidates} />
-      <MealSearchFavorites />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
@@ -69,6 +74,8 @@ export default async function TodayPage() {
         goals={goals}
       />
       <DayTotals summary={dashboard.summary} />
+      <MealSearchFavorites />
+      <SmartMealReminderCard day={dashboard.date} reminder={smartReminder} />
       <MealList meals={dashboard.meals} />
     </main>
   );
