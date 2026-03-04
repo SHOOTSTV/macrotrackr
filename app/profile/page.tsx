@@ -1,6 +1,7 @@
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { GoalsForm } from "@/src/features/profile/components/goals-form";
+import { WeightTrendCard } from "@/src/features/profile/components/weight-trend-card";
 import { getNutritionGoalsOrDefault } from "@/src/lib/services/profile-goals";
 
 export default async function ProfilePage() {
@@ -27,6 +28,7 @@ export default async function ProfilePage() {
       </header>
 
       <GoalsForm initialGoals={goals} />
+      <WeightTrendCard />
     </main>
   );
 }

@@ -6,6 +6,7 @@ import { GoalsProgressCard } from "@/src/features/dashboard/components/goals-pro
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
+import { WeightTrendCard } from "@/src/features/profile/components/weight-trend-card";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
@@ -39,6 +40,7 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm />
+      <WeightTrendCard compact />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
