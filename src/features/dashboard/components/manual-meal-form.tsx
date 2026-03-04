@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import { getAuthHeaders } from "@/src/lib/auth/client-auth";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
+import { CopyPreviousMeals } from "@/src/features/dashboard/components/copy-previous-meals";
+import { getAuthHeaders } from "@/src/lib/auth/client-auth";
+import type { CopyMealCandidate } from "@/src/types/meal";
 
 function toDatetimeLocalValue(date: Date): string {
   const pad = (value: number) => String(value).padStart(2, "0");
@@ -15,9 +17,15 @@ function toDatetimeLocalValue(date: Date): string {
   )}:${pad(date.getMinutes())}`;
 }
 
-export function ManualMealForm() {
+interface ManualMealFormProps {
+  copyCandidates?: CopyMealCandidate[];
+  enableCopyPrevious?: boolean;
+}
+
+export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: ManualMealFormProps) {
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
+  const [isCopyModalOpen, setIsCopyModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -99,11 +107,41 @@ export function ManualMealForm() {
     }
   }
 
+  const effectiveCopyCandidates = copyCandidates ?? [];
+  const shouldShowCopyPrevious = enableCopyPrevious && effectiveCopyCandidates.length > 0;
+
   if (!isOpen) {
     return (
-      <div className="flex">
-        <Button onClick={() => setIsOpen(true)}>Add meal</Button>
-      </div>
+      <>
+        <div className="flex flex-wrap gap-2">
+          <Button onClick={() => setIsOpen(true)}>Add meal</Button>
+          {shouldShowCopyPrevious ? (
+            <Button type="button" variant="ghost" onClick={() => setIsCopyModalOpen(true)}>
+              Copy previous meal
+            </Button>
+          ) : null}
+        </div>
+
+        {shouldShowCopyPrevious && isCopyModalOpen ? (
+          <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/40 px-4 py-8 backdrop-blur-sm">
+            <div className="w-full max-w-xl rounded-2xl border border-white/70 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.35)]">
+              <div className="mb-3 flex items-center justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick tool</p>
+                  <h2 className="text-sm font-medium text-slate-900">Copy from a previous meal</h2>
+                </div>
+                <Button type="button" variant="ghost" onClick={() => setIsCopyModalOpen(false)}>
+                  Close
+                </Button>
+              </div>
+
+              <div className="max-h-[60vh] overflow-y-auto pr-1">
+                <CopyPreviousMeals candidates={effectiveCopyCandidates} />
+              </div>
+            </div>
+          </div>
+        ) : null}
+      </>
     );
   }
 

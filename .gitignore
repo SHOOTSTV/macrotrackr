@@ -46,3 +46,6 @@ ROADMAP.md
 
 # cursor
 .cursor/
+
+# codex
+.codex/environments/environment.toml
