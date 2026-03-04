@@ -2,8 +2,6 @@
 
 import { useEffect, useMemo } from "react";
 import { toast } from "sonner";
-
-import { Card } from "@/src/components/ui/card";
 import { getAuthHeaders } from "@/src/lib/auth/client-auth";
 import type { NutritionGoalsInput } from "@/src/types/profile";
 
@@ -83,18 +81,9 @@ export function MacroOverrunAlerts({ day, consumed, goals }: MacroOverrunAlertsP
     }
 
     for (const overrun of overruns) {
-      const dedupeKey = `macro-alert:${day}:${overrun.macro}`;
-      if (typeof window !== "undefined" && window.sessionStorage.getItem(dedupeKey)) {
-        continue;
-      }
-
       toast.warning(
         `${overrun.label} over target by ${formatValue(overrun.overBy)}${overrun.unit}.`,
       );
-
-      if (typeof window !== "undefined") {
-        window.sessionStorage.setItem(dedupeKey, "1");
-      }
 
       void (async () => {
         try {
@@ -124,16 +113,5 @@ export function MacroOverrunAlerts({ day, consumed, goals }: MacroOverrunAlertsP
     return null;
   }
 
-  return (
-    <Card className="border-amber-200 bg-amber-50/60">
-      <h3 className="text-base font-semibold text-amber-900">Macro budget alert</h3>
-      <ul className="mt-2 space-y-1 text-sm text-amber-800">
-        {overruns.map((overrun) => (
-          <li key={overrun.macro}>
-            {overrun.label}: +{formatValue(overrun.overBy)}{overrun.unit} over target
-          </li>
-        ))}
-      </ul>
-    </Card>
-  );
+  return null;
 }
