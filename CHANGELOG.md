@@ -2,6 +2,14 @@
 
 All notable changes to this project will be documented in this file.
 
+## [Unreleased]
+
+### Added
+- Adaptive onboarding flow (`/onboarding`) with auto-calculated nutrition goals from profile inputs.
+- Mandatory onboarding gate before accessing Today/History/Profile pages.
+- New onboarding API (`GET/PUT /api/profile/onboarding`) and analytics event `onboarding_completed`.
+- `user_profile` migration with RLS policies.
+
 ## [1.1.0] - 2026-03-03
 
 ### Added

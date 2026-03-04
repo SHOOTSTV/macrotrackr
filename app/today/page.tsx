@@ -8,18 +8,18 @@ import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-
 import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { MealSearchFavorites } from "@/src/features/dashboard/components/meal-search-favorites";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
-import { requireServerUserId } from "@/src/lib/auth/server-session";
+import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
 import { listMealsForCopyCandidates } from "@/src/lib/services/meals";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
 
-export default async function TodayPage() {
-  const userId = await requireServerUserId();
+export default async function TodayPage() {  
+  const userId = await requireServerUserIdWithOnboarding();
   const now = new Date();
   const date = formatISO(now, { representation: "date" });
   const yesterdayDate = formatISO(subDays(now, 1), { representation: "date" });
-  const lastWeekDate = formatISO(subDays(now, 7), { representation: "date" });
-
+  const lastWeekDate = formatISO(subDays(now, 7), { representation: "date" });  
+  
   const [dashboard, goals, copyCandidates] = await Promise.all([
     getDayDashboard(userId, date),
     getNutritionGoals(userId),
