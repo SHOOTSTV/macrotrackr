@@ -85,6 +85,15 @@ export function MacroOverrunAlerts({ day, consumed, goals }: MacroOverrunAlertsP
         `${overrun.label} over target by ${formatValue(overrun.overBy)}${overrun.unit}.`,
       );
 
+      const dedupeKey = `macro-alert-analytics:${day}:${overrun.macro}`;
+      if (typeof window !== "undefined" && window.sessionStorage.getItem(dedupeKey)) {
+        continue;
+      }
+
+      if (typeof window !== "undefined") {
+        window.sessionStorage.setItem(dedupeKey, "1");
+      }
+
       void (async () => {
         try {
           const authHeaders = await getAuthHeaders();
