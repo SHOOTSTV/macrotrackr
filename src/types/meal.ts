@@ -31,3 +31,8 @@ export interface DailySummary {
   carbs_total: number;
   fat_total: number;
 }
+
+export interface CopyMealCandidate {
+  source: "yesterday" | "last_week";
+  meal: Meal;
+}

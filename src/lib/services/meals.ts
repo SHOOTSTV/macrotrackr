@@ -3,7 +3,7 @@ import type { PostgrestError } from "@supabase/supabase-js";
 import { synchronizeUserProgress } from "@/src/lib/services/progress-sync";
 import { supabaseAdmin } from "@/src/lib/supabase/admin";
 import type { CreateMealInput, PatchMealInput } from "@/src/lib/validators/meals";
-import type { Meal } from "@/src/types/meal";
+import type { CopyMealCandidate, Meal } from "@/src/types/meal";
 
 const APP_TIME_ZONE = process.env.APP_TIME_ZONE ?? "Europe/Paris";
 
@@ -224,4 +224,43 @@ export async function listMealsForRange(
   }
 
   return (data ?? []) as Meal[];
+}
+
+export async function listMealsForCopyCandidates(
+  userId: string,
+  yesterdayDate: string,
+  lastWeekDate: string,
+): Promise<CopyMealCandidate[]> {
+  const [yesterdayMeals, lastWeekMeals] = await Promise.all([
+    listMealsForDate(userId, yesterdayDate),
+    listMealsForDate(userId, lastWeekDate),
+  ]);
+
+  return [
+    ...yesterdayMeals.map((meal) => ({ source: "yesterday" as const, meal })),
+    ...lastWeekMeals.map((meal) => ({ source: "last_week" as const, meal })),
+  ];
+}
+
+export async function copyMealFromPrevious(userId: string, mealId: string): Promise<Meal> {
+  const sourceMeal = await getMealById(mealId, userId);
+
+  const { meal } = await createMeal(
+    {
+      author: "manual",
+      source_detail: "quick_copy_previous",
+      eaten_at: new Date().toISOString(),
+      meal_type: sourceMeal.meal_type,
+      title: sourceMeal.title,
+      kcal: sourceMeal.kcal,
+      protein_g: sourceMeal.protein_g,
+      carbs_g: sourceMeal.carbs_g,
+      fat_g: sourceMeal.fat_g,
+      confidence: null,
+      notes: sourceMeal.notes ?? "",
+    },
+    userId,
+  );
+
+  return meal;
 }
