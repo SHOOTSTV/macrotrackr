@@ -52,8 +52,6 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm copyCandidates={copyCandidates} />
-      <MealSearchFavorites />
-      <SmartMealReminderCard day={dashboard.date} reminder={smartReminder} />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
@@ -76,6 +74,8 @@ export default async function TodayPage() {
         goals={goals}
       />
       <DayTotals summary={dashboard.summary} />
+      <MealSearchFavorites />
+      <SmartMealReminderCard day={dashboard.date} reminder={smartReminder} />
       <MealList meals={dashboard.meals} />
     </main>
   );

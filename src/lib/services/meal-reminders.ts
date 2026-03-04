@@ -67,18 +67,32 @@ export function detectSmartMealReminder(
     .map((mealType) => buildCandidate(mealType, recentMeals))
     .filter((candidate) => !todayMeals.some((meal) => meal.meal_type === candidate.mealType));
 
-  const matching = candidates
+  const inWindowMatch = candidates
     .filter((candidate) => nowMinute >= candidate.targetMinute + 30 && nowMinute <= candidate.targetMinute + 180)
     .sort((a, b) => b.targetMinute - a.targetMinute)[0];
 
-  if (!matching) {
+  if (inWindowMatch) {
+    return {
+      mealType: inWindowMatch.mealType,
+      source: inWindowMatch.source,
+      targetMinute: inWindowMatch.targetMinute,
+      message: `You usually log ${inWindowMatch.mealType} around this time. Want to add it now?`,
+    };
+  }
+
+  // Keep one reminder visible even if the initial 3-hour window has passed.
+  const overdueMatch = candidates
+    .filter((candidate) => nowMinute >= candidate.targetMinute + 30)
+    .sort((a, b) => b.targetMinute - a.targetMinute)[0];
+
+  if (!overdueMatch) {
     return null;
   }
 
   return {
-    mealType: matching.mealType,
-    source: matching.source,
-    targetMinute: matching.targetMinute,
-    message: `You usually log ${matching.mealType} around this time. Want to add it now?`,
+    mealType: overdueMatch.mealType,
+    source: overdueMatch.source,
+    targetMinute: overdueMatch.targetMinute,
+    message: `You usually log ${overdueMatch.mealType} around this time. Want to add it now?`,
   };
 }

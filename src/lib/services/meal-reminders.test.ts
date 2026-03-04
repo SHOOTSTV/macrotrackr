@@ -40,12 +40,19 @@ describe("detectSmartMealReminder", () => {
     expect(reminder?.source).toBe("habit");
   });
 
-  it("returns null when meal already logged today", () => {
+  it("does not return a reminder for a meal type already logged today", () => {
     const recentMeals = [meal({ meal_type: "dinner", eaten_at: "2026-03-01T19:30:00.000Z" })];
     const todayMeals = [meal({ meal_type: "dinner", eaten_at: "2026-03-04T19:35:00.000Z" })];
 
     const reminder = detectSmartMealReminder(recentMeals, todayMeals, new Date("2026-03-04T20:30:00.000Z"));
 
-    expect(reminder).toBeNull();
+    expect(reminder?.mealType).not.toBe("dinner");
+  });
+
+  it("returns an overdue reminder when window passed and meal is still missing", () => {
+    const reminder = detectSmartMealReminder([], [], new Date("2026-03-04T22:58:00.000Z"));
+
+    expect(reminder).not.toBeNull();
+    expect(reminder?.mealType).toBe("dinner");
   });
 });
