@@ -31,3 +31,35 @@ export interface DailySummary {
   carbs_total: number;
   fat_total: number;
 }
+
+export interface CopyMealCandidate {
+  source: "yesterday" | "last_week";
+  meal: Meal;
+}
+
+export interface FavoriteMeal {
+  id: string;
+  user_id: string;
+  source_meal_id: string | null;
+  title: string;
+  kcal: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  last_used_at: string | null;
+  created_at: string;
+}
+
+export interface MealSearchResult {
+  id: string;
+  source: "favorite" | "history";
+  source_meal_id: string | null;
+  title: string;
+  kcal: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  meal_type: MealType;
+  eaten_at: string | null;
+  is_favorite: boolean;
+}

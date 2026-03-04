@@ -4,11 +4,16 @@ export type AnalyticsEventName =
   | "streak_day_completed"
   | "weekly_goal_hit"
   | "onboarding_completed";
+  | "favorite_added"
+  | "meal_logged"
+  | "search_used"
+  | "macro_alert_triggered"
+  | "meal_copied";
 
 export async function trackAnalyticsEvent(
   userId: string,
   eventName: AnalyticsEventName,
-  payload: Record<string, unknown>,
+  payload: Record<string, unknown>
 ): Promise<void> {
   const { error } = await supabaseAdmin.from("analytics_events").insert({
     user_id: userId,
