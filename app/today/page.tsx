@@ -6,6 +6,7 @@ import { GoalsProgressCard } from "@/src/features/dashboard/components/goals-pro
 import { MacroOverrunAlerts } from "@/src/features/dashboard/components/macro-overrun-alerts";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { MealList } from "@/src/features/dashboard/components/meal-list";
+import { MealSearchFavorites } from "@/src/features/dashboard/components/meal-search-favorites";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
@@ -45,6 +46,7 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm copyCandidates={copyCandidates} />
+      <MealSearchFavorites />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
