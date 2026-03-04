@@ -3,6 +3,7 @@ import { formatISO } from "date-fns";
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
 import { GoalsProgressCard } from "@/src/features/dashboard/components/goals-progress-card";
+import { MacroOverrunAlerts } from "@/src/features/dashboard/components/macro-overrun-alerts";
 import { ManualMealForm } from "@/src/features/dashboard/components/manual-meal-form";
 import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
@@ -42,6 +43,16 @@ export default async function TodayPage() {
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
+        consumed={{
+          kcal: dashboard.summary.kcal_total,
+          protein: dashboard.summary.protein_total,
+          carbs: dashboard.summary.carbs_total,
+          fat: dashboard.summary.fat_total,
+        }}
+        goals={goals}
+      />
+      <MacroOverrunAlerts
+        day={dashboard.date}
         consumed={{
           kcal: dashboard.summary.kcal_total,
           protein: dashboard.summary.protein_total,
