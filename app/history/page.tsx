@@ -57,7 +57,7 @@ export default async function HistoryPage({ searchParams }: HistoryPageProps) {
         </div>
       </header>
 
-      <ManualMealForm />
+      <ManualMealForm enableCopyPrevious={false} />
       <StreakWeeklyCard mode="history" />
       <HistoryChartLazy days={dashboard.days} />
       <Card>
