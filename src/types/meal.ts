@@ -32,6 +32,11 @@ export interface DailySummary {
   fat_total: number;
 }
 
+export interface CopyMealCandidate {
+  source: "yesterday" | "last_week";
+  meal: Meal;
+}
+
 export interface FavoriteMeal {
   id: string;
   user_id: string;
