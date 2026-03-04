@@ -3,6 +3,30 @@ import { z } from "zod";
 import { mealTypeSchema } from "./meals";
 
 const numberMacro = z.number().finite().nonnegative();
+const booleanQuerySchema = z
+  .union([z.boolean(), z.string()])
+  .transform((value, context) => {
+    if (typeof value === "boolean") {
+      return value;
+    }
+
+    const normalizedValue = value.trim().toLowerCase();
+
+    if (normalizedValue === "true") {
+      return true;
+    }
+
+    if (normalizedValue === "false") {
+      return false;
+    }
+
+    context.addIssue({
+      code: z.ZodIssueCode.custom,
+      message: "Expected boolean value (true or false)",
+    });
+
+    return z.NEVER;
+  });
 
 export const createFavoriteSchema = z.object({
   meal_id: z.string().uuid(),
@@ -10,7 +34,7 @@ export const createFavoriteSchema = z.object({
 
 export const mealSearchQuerySchema = z.object({
   q: z.string().trim().max(120).default(""),
-  favoritesOnly: z.coerce.boolean().default(false),
+  favoritesOnly: booleanQuerySchema.default(false),
   limit: z.coerce.number().int().min(1).max(50).default(20),
 });
 

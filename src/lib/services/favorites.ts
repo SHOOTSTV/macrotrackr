@@ -82,22 +82,36 @@ export async function searchMeals(
 ): Promise<MealSearchResult[]> {
   const hasQuery = query.q.length > 0;
 
-  const favoritesPromise = supabaseAdmin
+  let favoritesQuery = supabaseAdmin
     .from("favorite_meals")
     .select("*")
     .eq("user_id", userId)
     .order("last_used_at", { ascending: false, nullsFirst: false })
-    .order("created_at", { ascending: false })
-    .limit(query.limit);
+    .order("created_at", { ascending: false });
+
+  if (hasQuery) {
+    favoritesQuery = favoritesQuery.ilike("title", `%${query.q}%`);
+  }
+
+  favoritesQuery = favoritesQuery.limit(query.limit);
+
+  const favoritesPromise = favoritesQuery;
 
   const mealsPromise = query.favoritesOnly
     ? Promise.resolve({ data: [], error: null })
-    : supabaseAdmin
-      .from("meals")
-      .select("*")
-      .eq("user_id", userId)
-      .order("eaten_at", { ascending: false })
-      .limit(query.limit);
+    : (() => {
+      let mealsQuery = supabaseAdmin
+        .from("meals")
+        .select("*")
+        .eq("user_id", userId)
+        .order("eaten_at", { ascending: false });
+
+      if (hasQuery) {
+        mealsQuery = mealsQuery.ilike("title", `%${query.q}%`);
+      }
+
+      return mealsQuery.limit(query.limit);
+    })();
 
   const [{ data: favoriteRows, error: favoriteError }, { data: mealRows, error: mealError }] =
     await Promise.all([favoritesPromise, mealsPromise]);
@@ -110,15 +124,10 @@ export async function searchMeals(
     throw toServiceError(mealError, "Failed to fetch meals");
   }
 
-  const filteredFavorites = (favoriteRows ?? []).filter((favorite) =>
-    hasQuery ? favorite.title.toLowerCase().includes(query.q.toLowerCase()) : true,
-  ) as FavoriteMeal[];
+  const favorites = (favoriteRows ?? []) as FavoriteMeal[];
+  const meals = (mealRows ?? []) as Meal[];
 
-  const filteredMeals = (mealRows ?? []).filter((meal) =>
-    hasQuery ? meal.title.toLowerCase().includes(query.q.toLowerCase()) : true,
-  ) as Meal[];
-
-  return mergeSearchResults({ favorites: filteredFavorites, meals: filteredMeals }).slice(
+  return mergeSearchResults({ favorites, meals }).slice(
     0,
     query.limit,
   );

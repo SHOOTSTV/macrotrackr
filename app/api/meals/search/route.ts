@@ -29,10 +29,14 @@ export async function GET(request: NextRequest) {
     const results = await searchMeals(userId, parsed.data);
 
     if (parsed.data.q.length > 0 || parsed.data.favoritesOnly) {
-      await trackAnalyticsEvent(userId, "search_used", {
-        query_length: parsed.data.q.length,
-        favorites_only: parsed.data.favoritesOnly,
-      });
+      try {
+        await trackAnalyticsEvent(userId, "search_used", {
+          query_length: parsed.data.q.length,
+          favorites_only: parsed.data.favoritesOnly,
+        });
+      } catch {
+        // Analytics are best-effort and should not break search.
+      }
     }
 
     return Response.json({ data: results });

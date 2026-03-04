@@ -18,6 +18,12 @@ describe("mealSearchQuerySchema", () => {
 
     expect(parsed.favoritesOnly).toBe(true);
   });
+
+  it("parses favoritesOnly=false from query string", () => {
+    const parsed = mealSearchQuerySchema.parse({ q: "chicken", favoritesOnly: "false" });
+
+    expect(parsed.favoritesOnly).toBe(false);
+  });
 });
 
 describe("logFromTemplateSchema", () => {
