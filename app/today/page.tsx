@@ -1,4 +1,4 @@
-import { formatISO } from "date-fns";
+import { formatISO, subDays } from "date-fns";
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
@@ -8,15 +8,20 @@ import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
 import { requireServerUserId } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
+import { listMealsForCopyCandidates } from "@/src/lib/services/meals";
 import { getNutritionGoals } from "@/src/lib/services/profile-goals";
 
 export default async function TodayPage() {
   const userId = await requireServerUserId();
-  const date = formatISO(new Date(), { representation: "date" });
+  const now = new Date();
+  const date = formatISO(now, { representation: "date" });
+  const yesterdayDate = formatISO(subDays(now, 1), { representation: "date" });
+  const lastWeekDate = formatISO(subDays(now, 7), { representation: "date" });
 
-  const [dashboard, goals] = await Promise.all([
+  const [dashboard, goals, copyCandidates] = await Promise.all([
     getDayDashboard(userId, date),
     getNutritionGoals(userId),
+    listMealsForCopyCandidates(userId, yesterdayDate, lastWeekDate),
   ]);
 
   return (
@@ -38,7 +43,7 @@ export default async function TodayPage() {
           <DashboardNav />
         </div>
       </header>
-      <ManualMealForm />
+      <ManualMealForm copyCandidates={copyCandidates} />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"

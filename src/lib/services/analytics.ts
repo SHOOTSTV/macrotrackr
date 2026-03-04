@@ -1,6 +1,9 @@
 import { supabaseAdmin } from "@/src/lib/supabase/admin";
 
-export type AnalyticsEventName = "streak_day_completed" | "weekly_goal_hit";
+export type AnalyticsEventName =
+  | "streak_day_completed"
+  | "weekly_goal_hit"
+  | "meal_copied";
 
 export async function trackAnalyticsEvent(
   userId: string,
