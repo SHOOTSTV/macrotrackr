@@ -8,4 +8,7 @@ script = ""
 [[actions]]
 name = "Exécuter"
 icon = "run"
-command = "pnpm i, pnpm dev"
+command = '''
+pnpm i
+pnpm dev
+'''

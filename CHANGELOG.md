@@ -5,6 +5,8 @@ All notable changes to this project will be documented in this file.
 ## [Unreleased]
 
 ### Added
+- Weight tracking in kg with 30-day chart, 7-day trend line, and weekly change summary on Today + Profile.
+- New weight API (`GET/POST /api/weight`) and `weight_logs` migration with RLS.
 - Adaptive onboarding flow (`/onboarding`) with auto-calculated nutrition goals from profile inputs.
 - Mandatory onboarding gate before accessing Today/History/Profile pages.
 - New onboarding API (`GET/PUT /api/profile/onboarding`) and analytics event `onboarding_completed`.
