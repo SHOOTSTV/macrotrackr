@@ -9,7 +9,6 @@ import { MealList } from "@/src/features/dashboard/components/meal-list";
 import { MealSearchFavorites } from "@/src/features/dashboard/components/meal-search-favorites";
 import { SmartMealReminderCard } from "@/src/features/dashboard/components/smart-meal-reminder";
 import { StreakWeeklyCard } from "@/src/features/dashboard/components/streak-weekly-card";
-import { WeightTrendCard } from "@/src/features/profile/components/weight-trend-card";
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { getDayDashboard } from "@/src/lib/services/dashboard";
 import { detectSmartMealReminder } from "@/src/lib/services/meal-reminders";
@@ -53,7 +52,6 @@ export default async function TodayPage() {
         </div>
       </header>
       <ManualMealForm copyCandidates={copyCandidates} />
-      <WeightTrendCard compact />
       <StreakWeeklyCard mode="today" />
       <GoalsProgressCard
         title="Today progress"
@@ -82,3 +80,4 @@ export default async function TodayPage() {
     </main>
   );
 }
+

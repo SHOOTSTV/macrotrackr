@@ -10,6 +10,16 @@ function mean(values: number[]): number {
   return values.reduce((sum, value) => sum + value, 0) / values.length;
 }
 
+function pickLatestEntry(entries: WeightLog[]): WeightLog | null {
+  return entries.reduce<WeightLog | null>((latest, current) => {
+    if (!latest) {
+      return current;
+    }
+
+    return new Date(current.logged_at).getTime() > new Date(latest.logged_at).getTime() ? current : latest;
+  }, null);
+}
+
 export function buildWeightTrend(logs: WeightLog[], from: string, to: string): WeightTrendPayload {
   const byDay = new Map<string, WeightLog[]>();
 
@@ -26,8 +36,9 @@ export function buildWeightTrend(logs: WeightLog[], from: string, to: string): W
   for (const dayValue of days) {
     const day = formatISO(dayValue, { representation: "date" });
     const entries = byDay.get(day) ?? [];
-    const avgWeight = entries.length > 0 ? mean(entries.map((entry) => Number(entry.weight_kg))) : 0;
-    points.push({ day, weight_kg: Number(avgWeight.toFixed(2)), trend_7d: 0 });
+    const latestEntry = pickLatestEntry(entries);
+    const dayWeight = latestEntry ? Number(latestEntry.weight_kg) : 0;
+    points.push({ day, weight_kg: Number(dayWeight.toFixed(2)), trend_7d: 0 });
   }
 
   const trendPoints = points.map((point, index) => {
