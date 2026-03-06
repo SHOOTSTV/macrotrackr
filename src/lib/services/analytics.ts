@@ -3,6 +3,7 @@ import { supabaseAdmin } from "@/src/lib/supabase/admin";
 export type AnalyticsEventName =
   | "streak_day_completed"
   | "weekly_goal_hit"
+  | "weight_logged"
   | "meal_reminder_shown"
   | "onboarding_completed"
   | "favorite_added"
