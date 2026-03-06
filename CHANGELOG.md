@@ -4,13 +4,28 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+## [1.3.0] - 2026-03-06
+
 ### Added
-- Weight tracking in kg with 30-day chart, 7-day trend line, and weekly change summary on Today + Profile.
-- New weight API (`GET/POST /api/weight`) and `weight_logs` migration with RLS.
+- Weight tracking in kg with a 30-day chart, 7-day trend line, and weekly change summary on Today and Profile.
+- New weight API (`GET/POST /api/weight`) and `weight_logs` migrations with RLS support.
+
+### Fixed
+- Weight charts now use the latest daily log, and weight tracking remains limited to the Profile page where intended.
+
+## [1.2.0] - 2026-03-04
+
+### Added
 - Adaptive onboarding flow (`/onboarding`) with auto-calculated nutrition goals from profile inputs.
-- Mandatory onboarding gate before accessing Today/History/Profile pages.
-- New onboarding API (`GET/PUT /api/profile/onboarding`) and analytics event `onboarding_completed`.
-- `user_profile` migration with RLS policies.
+- Mandatory onboarding gate before accessing Today, History, and Profile pages.
+- Smart in-app meal log reminders based on recent logging patterns.
+- Search and favorites quick-log flow for faster meal reuse.
+- One-click copy previous meal with Sonner toast feedback.
+- Macro budget overrun alerts with analytics tracking.
+- New onboarding and favorites APIs plus the supporting `user_profile` and favorites database migrations.
+
+### Changed
+- Dashboard meal entry UX now includes reminder, quick-log, and copy-previous workflows in a single flow.
 
 ## [1.1.0] - 2026-03-03
 
