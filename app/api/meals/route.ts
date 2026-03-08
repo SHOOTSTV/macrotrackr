@@ -10,6 +10,7 @@ import {
   unauthorized,
 } from "@/src/lib/http/response";
 import { getClientIp } from "@/src/lib/http/request";
+import { trackFunnelProgressOnMealLogged } from "@/src/lib/services/analytics";
 import { createMeal } from "@/src/lib/services/meals";
 import { createMealSchema } from "@/src/lib/validators/meals";
 
@@ -38,6 +39,10 @@ export async function POST(request: NextRequest) {
     }
 
     const { meal, replayed } = await createMeal(parsed.data, userId, idempotencyKey);
+
+    if (!replayed) {
+      await trackFunnelProgressOnMealLogged(userId, meal.eaten_at);
+    }
 
     return Response.json(
       { data: meal },
