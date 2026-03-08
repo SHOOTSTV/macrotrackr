@@ -21,6 +21,19 @@ function AuthPageContent() {
   const [error, setError] = useState<string | null>(null);
   const [connectedUserId, setConnectedUserId] = useState<string | null>(null);
 
+  const isEmbeddedBrowser = useMemo(() => {
+    if (typeof window === "undefined") {
+      return false;
+    }
+
+    const userAgent = navigator.userAgent.toLowerCase();
+    const embeddedSignals = ["instagram", "telegram", "fbav", "fban", "line", "wv"];
+    const detected = embeddedSignals.some((signal) => userAgent.includes(signal));
+    const isIosStandaloneWebView = /iphone|ipad|ipod/.test(userAgent) && !userAgent.includes("safari");
+
+    return detected || isIosStandaloneWebView;
+  }, []);
+
   const authRedirectUrl = useMemo(() => {
     if (typeof window === "undefined") {
       return undefined;
@@ -87,6 +100,30 @@ function AuthPageContent() {
       setError(oauthError.message);
       setLoading(false);
     }
+  }
+
+  async function handleMagicLinkSignIn() {
+    setLoading(true);
+    setError(null);
+    setMessage(null);
+
+    const redirectTo = typeof window === "undefined" ? undefined : `${window.location.origin}/auth?oauth=1`;
+
+    const { error: otpError } = await supabaseBrowser.auth.signInWithOtp({
+      email,
+      options: {
+        emailRedirectTo: redirectTo,
+      },
+    });
+
+    if (otpError) {
+      setError(otpError.message);
+      setLoading(false);
+      return;
+    }
+
+    setMessage("Magic link sent. Check your email to continue.");
+    setLoading(false);
   }
 
   async function handleEmailSignIn() {
@@ -161,11 +198,18 @@ function AuthPageContent() {
           <p className="text-sm font-semibold uppercase tracking-wide text-blue-600">Auth</p>
           <h1 className="text-2xl font-bold text-slate-900">Sign in to MacroTrackr</h1>
           <p className="text-sm text-slate-600">
-            Sign in with Google or email/password to access your dashboard.
+            Sign in with Google, magic link, or email/password to access your dashboard.
           </p>
         </div>
 
-        <Button onClick={handleGoogleSignIn} disabled={loading} className="w-full">
+        {isEmbeddedBrowser ? (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">
+            Google Sign-In is blocked in in-app browsers (Telegram, Instagram, etc.). Open this page in Safari or
+            Chrome to continue with Google, or use a magic link below.
+          </div>
+        ) : null}
+
+        <Button onClick={handleGoogleSignIn} disabled={loading || isEmbeddedBrowser} className="w-full">
           Continue with Google
         </Button>
 
@@ -185,6 +229,9 @@ function AuthPageContent() {
         </div>
 
         <div className="flex flex-wrap gap-2">
+          <Button onClick={handleMagicLinkSignIn} disabled={loading || !email}>
+            Send magic link
+          </Button>
           <Button onClick={handleEmailSignIn} disabled={loading || !email || !password}>
             Sign in
           </Button>
