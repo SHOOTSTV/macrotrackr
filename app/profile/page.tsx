@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/profile",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { GoalsForm } from "@/src/features/profile/components/goals-form";
@@ -31,7 +35,7 @@ export default async function ProfilePage() {
               Nutrition Goals
             </h1>
             <p className="text-sm text-slate-600">
-              User: <span className="font-medium">{userId}</span>
+              Set calorie and macro targets, then monitor your progress over time.
             </p>
           </div>
           <DashboardNav />

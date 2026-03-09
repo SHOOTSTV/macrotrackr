@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/today",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
@@ -53,8 +57,7 @@ export default async function TodayPage() {
               Nutrition Dashboard
             </h1>
             <p className="text-sm text-slate-600">
-              User: <span className="font-medium">{userId}</span> - Date:{" "}
-              {dashboard.date}
+              Review today&apos;s macros, calories, and meal log for <span className="font-medium">{dashboard.date}</span>.
             </p>
           </div>
           <DashboardNav />
@@ -89,4 +92,3 @@ export default async function TodayPage() {
     </main>
   );
 }
-

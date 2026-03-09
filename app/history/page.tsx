@@ -8,6 +8,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/history",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
