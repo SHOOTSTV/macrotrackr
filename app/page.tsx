@@ -2,9 +2,9 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
-  title: "AI nutrition tracker",
+  title: "AI Nutrition Tracker with Fast Meal Logging and Macro Goals",
   description:
-    "Log meals in seconds with AI, track macros clearly, and edit your dashboard instantly.",
+    "Use AI to log meals in seconds, monitor calories and macros in one dashboard, and stay consistent with clear daily goals and fast edits.",
   alternates: {
     canonical: "/",
   },

@@ -17,11 +17,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://macrotrackr.vercel.app"),
   title: {
-    default: "MacroTrackr",
+    default: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
     template: "%s | MacroTrackr",
   },
   description:
-    "Track calories and macros fast with AI meal logging and dashboard editing.",
+    "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
   alternates: {
     canonical: "/",
   },
@@ -33,9 +33,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "MacroTrackr",
-    title: "MacroTrackr | AI Nutrition Tracker",
+    title: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
     description:
-      "Track calories and macros fast with AI meal logging and dashboard editing.",
+      "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
     images: [
       {
         url: "/og-image-fallback.png",
@@ -46,9 +46,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MacroTrackr | AI Nutrition Tracker",
+    title: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
     description:
-      "Track calories and macros fast with AI meal logging and dashboard editing.",
+      "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
     images: ["/og-image-fallback.png"],
   },
 };
