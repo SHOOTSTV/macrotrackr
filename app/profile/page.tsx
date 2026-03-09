@@ -1,4 +1,15 @@
+import type { Metadata } from "next";
+
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
+
+export const metadata: Metadata = {
+  title: "Profile and nutrition goals",
+  description:
+    "Set your nutrition goals and monitor weight trends in your MacroTrackr profile.",
+  alternates: {
+    canonical: "/profile",
+  },
+};
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { GoalsForm } from "@/src/features/profile/components/goals-form";
 import { WeightTrendCard } from "@/src/features/profile/components/weight-trend-card";
