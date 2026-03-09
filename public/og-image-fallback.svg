@@ -1,0 +1,18 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1200" y2="630" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.52" stop-color="#1D4ED8"/>
+      <stop offset="1" stop-color="#7C3AED"/>
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+
+  <rect x="70" y="58" width="260" height="56" rx="28" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.45)"/>
+  <text x="200" y="94" text-anchor="middle" fill="white" font-size="28" font-weight="700" font-family="Inter,Arial,sans-serif">MacroTrackr</text>
+
+  <text x="70" y="292" fill="white" font-size="84" font-weight="800" font-family="Inter,Arial,sans-serif">AI Nutrition Tracker</text>
+  <text x="70" y="350" fill="rgba(255,255,255,0.95)" font-size="34" font-weight="500" font-family="Inter,Arial,sans-serif">Log meals fast. Track macros clearly. Edit instantly.</text>
+
+  <text x="70" y="578" fill="rgba(255,255,255,0.9)" font-size="24" font-weight="500" font-family="Inter,Arial,sans-serif">macrotrackr.vercel.app</text>
+</svg>
