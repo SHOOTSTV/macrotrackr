@@ -4,7 +4,6 @@ import { useState } from "react";
 import { createPortal } from "react-dom";
 
 import { getAuthHeaders } from "@/src/lib/auth/client-auth";
-import { applyMealCorrection } from "@/src/lib/services/meal-correction";
 import { Button } from "@/src/components/ui/button";
 import { Input } from "@/src/components/ui/input";
 import type { Meal } from "@/src/types/meal";
@@ -25,28 +24,6 @@ export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
   const [carbs, setCarbs] = useState(String(meal.carbs_g));
   const [fat, setFat] = useState(String(meal.fat_g));
   const [notes, setNotes] = useState(meal.notes ?? "");
-  const [quickCorrection, setQuickCorrection] = useState("");
-
-  function onApplyQuickCorrection() {
-    setError(null);
-
-    try {
-      const result = applyMealCorrection(quickCorrection, {
-        kcal: Number(kcal),
-        protein_g: Number(protein),
-        carbs_g: Number(carbs),
-        fat_g: Number(fat),
-      });
-
-      setKcal(String(result.updated.kcal));
-      setProtein(String(result.updated.protein_g));
-      setCarbs(String(result.updated.carbs_g));
-      setFat(String(result.updated.fat_g));
-      setQuickCorrection("");
-    } catch (correctionError) {
-      setError(correctionError instanceof Error ? correctionError.message : "Could not apply correction");
-    }
-  }
 
   async function onSubmit() {
     setSaving(true);
@@ -148,26 +125,6 @@ export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
             className="min-h-20 w-full rounded-xl border border-slate-200 bg-white/90 p-2 text-sm text-slate-800 outline-none ring-blue-200 focus:ring-2"
             placeholder="Meal description"
           />
-
-          <div className="rounded-xl border border-blue-100 bg-blue-50/60 p-3">
-            <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-blue-700">Fast correction (beta)</p>
-            <div className="flex flex-col gap-2 sm:flex-row">
-              <Input
-                value={quickCorrection}
-                onChange={(event) => setQuickCorrection(event.target.value)}
-                placeholder="e.g. +10 protein -5 carbs or kcal 620"
-              />
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onApplyQuickCorrection}
-                disabled={saving || deleting || quickCorrection.trim().length === 0}
-              >
-                Apply
-              </Button>
-            </div>
-          </div>
-
           {error ? <p className="text-sm text-red-600">{error}</p> : null}
         </div>
         <div className="mt-4 flex gap-2">
