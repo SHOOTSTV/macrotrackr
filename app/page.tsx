@@ -1,8 +1,39 @@
+import type { Metadata } from "next";
 import Link from "next/link";
+
+export const metadata: Metadata = {
+  title: "AI nutrition tracker",
+  description:
+    "Log meals in seconds with AI, track macros clearly, and edit your dashboard instantly.",
+  alternates: {
+    canonical: "/",
+  },
+};
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "MacroTrackr",
+  applicationCategory: "HealthApplication",
+  operatingSystem: "Web",
+  url: "https://macrotrackr.vercel.app",
+  description:
+    "AI-first nutrition tracking with instant meal logging and macro dashboards.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+};
 
 export default function Home() {
   return (
-    <main className="app-shell relative flex min-h-screen max-w-6xl flex-col justify-center gap-5 py-8 md:py-12">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className="app-shell relative flex min-h-screen max-w-6xl flex-col justify-center gap-5 py-8 md:py-12">
       <div className="pointer-events-none absolute inset-x-0 -top-44 -z-10 h-144" />
 
       <section className="rounded-4xl bg-linear-to-r from-sky-300/60 via-indigo-300/50 to-fuchsia-300/45 p-px shadow-[0_30px_90px_rgba(15,23,42,0.14)]">
@@ -168,6 +199,7 @@ export default function Home() {
           </p>
         </article>
       </section>
-    </main>
+      </main>
+    </>
   );
 }
