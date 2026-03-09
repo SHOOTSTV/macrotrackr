@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
     images: [
       {
-        url: "/og-image-fallback.png",
+        url: "/og-image-fallback.jpg",
         width: 1200,
         height: 630,
       },
@@ -54,7 +54,7 @@ export const metadata: Metadata = {
     title: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
     description:
       "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
-    images: ["/og-image-fallback.png"],
+    images: ["/og-image-fallback.jpg"],
   },
 };
 
