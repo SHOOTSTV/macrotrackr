@@ -38,7 +38,7 @@ export const metadata: Metadata = {
       "Track calories and macros fast with AI meal logging and dashboard editing.",
     images: [
       {
-        url: "/og-image-fallback.svg",
+        url: "/og-image-fallback.png",
         width: 1200,
         height: 630,
       },
@@ -49,7 +49,7 @@ export const metadata: Metadata = {
     title: "MacroTrackr | AI Nutrition Tracker",
     description:
       "Track calories and macros fast with AI meal logging and dashboard editing.",
-    images: ["/og-image-fallback.svg"],
+    images: ["/og-image-fallback.png"],
   },
 };
 
