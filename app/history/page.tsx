@@ -1,4 +1,14 @@
+import type { Metadata } from "next";
 import { formatISO, subDays } from "date-fns";
+
+export const metadata: Metadata = {
+  title: "Nutrition history",
+  description:
+    "Explore your meal and macro history with trends and day-by-day summaries.",
+  alternates: {
+    canonical: "/history",
+  },
+};
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";

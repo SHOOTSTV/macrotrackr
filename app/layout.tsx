@@ -15,8 +15,42 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "MacroTrackr",
-  description: "AI-first nutrition tracker with dashboard editing",
+  metadataBase: new URL("https://macrotrackr.vercel.app"),
+  title: {
+    default: "MacroTrackr",
+    template: "%s | MacroTrackr",
+  },
+  description:
+    "Track calories and macros fast with AI meal logging and dashboard editing.",
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: "MacroTrackr",
+    title: "MacroTrackr | AI Nutrition Tracker",
+    description:
+      "Track calories and macros fast with AI meal logging and dashboard editing.",
+    images: [
+      {
+        url: "/og-image",
+        width: 1200,
+        height: 630,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "MacroTrackr | AI Nutrition Tracker",
+    description:
+      "Track calories and macros fast with AI meal logging and dashboard editing.",
+    images: ["/og-image"],
+  },
 };
 
 export default function RootLayout({

@@ -1,4 +1,13 @@
+import type { Metadata } from "next";
 import { formatISO, subDays } from "date-fns";
+
+export const metadata: Metadata = {
+  title: "Today dashboard",
+  description: "View today's calories and macros, log meals, and stay on target.",
+  alternates: {
+    canonical: "/today",
+  },
+};
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";
 import { DayTotals } from "@/src/features/dashboard/components/day-totals";
