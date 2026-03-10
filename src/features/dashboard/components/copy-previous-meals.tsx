@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { getAuthHeaders } from "@/src/lib/auth/client-auth";
 import type { CopyMealCandidate } from "@/src/types/meal";
@@ -53,23 +54,25 @@ export function CopyPreviousMeals({ candidates }: CopyPreviousMealsProps) {
   return (
     <div className="space-y-3">
       {candidates.length === 0 ? (
-        <p className="text-sm text-slate-500">
+        <div className="rounded-[22px] border border-dashed border-black/10 bg-[#f8f4ee] px-4 py-6 text-sm text-[#6f685f]">
           No previous meals available yet.
-        </p>
+        </div>
       ) : (
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {candidates.map((candidate) => (
             <div
               key={`${candidate.source}-${candidate.meal.id}`}
-              className="flex items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white/90 px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] border border-black/8 bg-[#f8f4ee] px-4 py-3.5"
             >
-              <div>
-                <p className="font-medium text-slate-900">
-                  {candidate.meal.title}
-                </p>
-                <p className="text-xs text-slate-500">
-                  {sourceLabel(candidate.source)} • {candidate.meal.meal_type} •{" "}
-                  {candidate.meal.kcal} kcal
+              <div className="space-y-2">
+                <div className="flex flex-wrap items-center gap-2">
+                  <p className="font-medium text-[#151515]">
+                    {candidate.meal.title}
+                  </p>
+                  <Badge>{sourceLabel(candidate.source)}</Badge>
+                </div>
+                <p className="text-sm text-[#6f685f]">
+                  {candidate.meal.meal_type} / {candidate.meal.kcal} kcal
                 </p>
               </div>
               <Button
@@ -82,7 +85,7 @@ export function CopyPreviousMeals({ candidates }: CopyPreviousMealsProps) {
                 }
                 onClick={() => void copyMeal(candidate.meal.id)}
               >
-                {loadingMealId === candidate.meal.id ? "Copying..." : "Copy"}
+                {loadingMealId === candidate.meal.id ? "Copying..." : "Copy meal"}
               </Button>
             </div>
           ))}

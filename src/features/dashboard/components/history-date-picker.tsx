@@ -80,68 +80,86 @@ export function HistoryDatePicker({ from, to }: HistoryDatePickerProps) {
     navigate(from, clamped);
   }
 
-  const isAtToday = to >= toISODate(new Date());
+  const today = toISODate(new Date());
+  const isAtToday = to >= today;
 
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-      <div className="flex items-center gap-1.5">
-        <Button variant="ghost" onClick={onPrev} aria-label="Previous period">
-          <ChevronLeftIcon />
-        </Button>
+    <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 sm:p-5">
+      <div className="flex flex-wrap items-start justify-between gap-4">
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">
+            Range
+          </p>
+          <div className="inline-flex items-center rounded-full border border-black/6 bg-white/78 px-4 py-2 text-sm font-medium text-[#3e3a34] shadow-[0_8px_18px_rgba(21,21,21,0.03)]">
+            {format(new Date(from), "MMM d")} - {format(new Date(to), "MMM d, yyyy")}
+          </div>
+        </div>
 
-        <span className="min-w-[10rem] text-center text-sm font-medium text-slate-700">
-          {format(new Date(from), "MMM d")} – {format(new Date(to), "MMM d, yyyy")}
-        </span>
-
-        <Button
-          variant="ghost"
-          onClick={onNext}
-          disabled={isAtToday}
-          aria-label="Next period"
-        >
-          <ChevronRightIcon />
-        </Button>
-      </div>
-
-      <div className="flex items-center gap-2">
-        {PRESETS.map((p) => (
+        <div className="flex items-center gap-1.5">
           <Button
-            key={p.days}
             variant="ghost"
-            onClick={() => onPreset(p.days)}
-            className={cn(
-              "px-3 py-1.5 text-xs",
-              span === p.days && to >= toISODate(new Date()) &&
-                "border-blue-300 bg-blue-50 text-blue-700",
-            )}
+            onClick={onPrev}
+            aria-label="Previous period"
+            className="h-10 w-10 rounded-full bg-white/78 p-0 hover:bg-white"
           >
-            {p.label}
+            <ChevronLeftIcon />
           </Button>
-        ))}
+          <Button
+            variant="ghost"
+            onClick={onNext}
+            disabled={isAtToday}
+            aria-label="Next period"
+            className="h-10 w-10 rounded-full bg-white/78 p-0 hover:bg-white"
+          >
+            <ChevronRightIcon />
+          </Button>
+        </div>
       </div>
 
-      <div className="flex items-center gap-2 text-sm">
-        <label className="flex items-center gap-1.5 text-slate-600">
-          From
-          <input
-            type="date"
-            value={from}
-            max={to}
-            onChange={(e) => onFromChange(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-800 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-300"
-          />
-        </label>
-        <label className="flex items-center gap-1.5 text-slate-600">
-          To
-          <input
-            type="date"
-            value={to}
-            min={from}
-            max={toISODate(new Date())}
-            onChange={(e) => onToChange(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-white px-2 py-1.5 text-sm text-slate-800 outline-none focus:border-blue-400 focus:ring-1 focus:ring-blue-300"
-          />
-        </label>
+      <div className="mt-4 flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+        <div className="flex flex-wrap gap-2">
+          {PRESETS.map((preset) => {
+            const isActive = span === preset.days && to >= today;
+
+            return (
+              <Button
+                key={preset.days}
+                variant="ghost"
+                onClick={() => onPreset(preset.days)}
+                className={cn(
+                  "rounded-full bg-white/72 px-3.5 py-2 text-xs hover:bg-white",
+                  isActive && "border-[#cfddd1] bg-[#edf1ea] text-[#365141]",
+                )}
+              >
+                {preset.label}
+              </Button>
+            );
+          })}
+        </div>
+
+        <div className="grid gap-2 sm:grid-cols-2 xl:min-w-[360px]">
+          <label className="space-y-1 text-sm text-[#6f685f]">
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">From</span>
+            <input
+              type="date"
+              value={from}
+              max={to}
+              onChange={(e) => onFromChange(e.target.value)}
+              className="w-full rounded-[16px] border border-black/8 bg-white px-3 py-2.5 text-sm text-[#151515] outline-none focus:border-[#c6d3c4] focus:ring-1 focus:ring-[#d8e2d6]"
+            />
+          </label>
+          <label className="space-y-1 text-sm text-[#6f685f]">
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">To</span>
+            <input
+              type="date"
+              value={to}
+              min={from}
+              max={today}
+              onChange={(e) => onToChange(e.target.value)}
+              className="w-full rounded-[16px] border border-black/8 bg-white px-3 py-2.5 text-sm text-[#151515] outline-none focus:border-[#c6d3c4] focus:ring-1 focus:ring-[#d8e2d6]"
+            />
+          </label>
+        </div>
       </div>
     </div>
   );

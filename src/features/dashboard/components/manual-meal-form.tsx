@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 
 import { Button } from "@/src/components/ui/button";
@@ -16,6 +17,11 @@ function toDatetimeLocalValue(date: Date): string {
     date.getHours(),
   )}:${pad(date.getMinutes())}`;
 }
+
+const selectClassName =
+  "w-full rounded-[18px] border border-black/8 bg-white px-3.5 py-2.5 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2";
+const textareaClassName =
+  "min-h-24 w-full rounded-[18px] border border-black/8 bg-white px-3.5 py-3 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2";
 
 interface ManualMealFormProps {
   copyCandidates?: CopyMealCandidate[];
@@ -101,7 +107,7 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
       setIsOpen(false);
       router.refresh();
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Unknown error");
+      setError(submitError instanceof Error ? submitError.message : "Unexpected error");
     } finally {
       setLoading(false);
     }
@@ -109,6 +115,27 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
 
   const effectiveCopyCandidates = copyCandidates ?? [];
   const shouldShowCopyPrevious = enableCopyPrevious && effectiveCopyCandidates.length > 0;
+
+  const copyModal = shouldShowCopyPrevious && isCopyModalOpen ? (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/32 px-4 py-8 backdrop-blur-sm">
+      <div className="w-full max-w-3xl rounded-[30px] border border-black/8 bg-white/92 p-5 shadow-[0_24px_48px_rgba(21,21,21,0.14)] sm:p-6">
+        <div className="mb-4 flex items-start justify-between gap-3">
+          <div className="space-y-1">
+            <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">Quick tool</p>
+            <h2 className="text-2xl font-medium tracking-[-0.04em] text-[#151515]">Copy a previous meal</h2>
+            <p className="text-sm text-[#6f685f]">Start from something you already logged and reuse it in one click.</p>
+          </div>
+          <Button type="button" variant="ghost" onClick={() => setIsCopyModalOpen(false)}>
+            Close
+          </Button>
+        </div>
+
+        <div className="max-h-[70vh] overflow-y-auto pr-1">
+          <CopyPreviousMeals candidates={effectiveCopyCandidates} />
+        </div>
+      </div>
+    </div>
+  ) : null;
 
   if (!isOpen) {
     return (
@@ -122,128 +149,115 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
           ) : null}
         </div>
 
-        {shouldShowCopyPrevious && isCopyModalOpen ? (
-          <div className="fixed inset-0 z-40 flex items-center justify-center bg-slate-950/40 px-4 py-8 backdrop-blur-sm">
-            <div className="w-full max-w-xl rounded-2xl border border-white/70 bg-white/95 p-4 shadow-[0_18px_45px_rgba(15,23,42,0.35)]">
-              <div className="mb-3 flex items-center justify-between gap-3">
-                <div>
-                  <p className="text-xs font-semibold uppercase tracking-wide text-slate-500">Quick tool</p>
-                  <h2 className="text-sm font-medium text-slate-900">Copy from a previous meal</h2>
-                </div>
-                <Button type="button" variant="ghost" onClick={() => setIsCopyModalOpen(false)}>
-                  Close
-                </Button>
-              </div>
-
-              <div className="max-h-[60vh] overflow-y-auto pr-1">
-                <CopyPreviousMeals candidates={effectiveCopyCandidates} />
-              </div>
-            </div>
-          </div>
-        ) : null}
+        {typeof document !== "undefined" && copyModal ? createPortal(copyModal, document.body) : null}
       </>
     );
   }
 
   return (
-    <Card>
-      <div className="mb-3 flex items-center justify-between gap-2">
-        <h2 className="text-lg font-semibold text-slate-900">Add a meal manually</h2>
-        <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
-          Cancel
-        </Button>
-      </div>
-      <form className="space-y-3" onSubmit={onSubmit}>
-        <Input
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          placeholder="e.g. Chicken avocado bowl"
-          required
-        />
-
-        <div className="grid gap-2 md:grid-cols-2">
-          <label className="space-y-1 text-sm text-slate-600">
-            Meal type
-            <select
-              className="w-full rounded-xl border border-slate-200 bg-white/90 px-3 py-2 text-sm text-slate-800 outline-none ring-blue-200 focus:ring-2"
-              value={mealType}
-              onChange={(event) => setMealType(event.target.value)}
-            >
-              <option value="breakfast">Breakfast</option>
-              <option value="lunch">Lunch</option>
-              <option value="dinner">Dinner</option>
-              <option value="snack">Snack</option>
-            </select>
-          </label>
-
-          <label className="space-y-1 text-sm text-slate-600">
-            Date and time
-            <Input
-              type="datetime-local"
-              value={eatenAt}
-              onChange={(event) => setEatenAt(event.target.value)}
-              required
-            />
-          </label>
-        </div>
-
-        <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-          <Input
-            type="number"
-            min={0}
-            step="1"
-            value={kcal}
-            onChange={(event) => setKcal(event.target.value)}
-            placeholder="kcal"
-            required
-          />
-          <Input
-            type="number"
-            min={0}
-            step="0.1"
-            value={protein}
-            onChange={(event) => setProtein(event.target.value)}
-            placeholder="protein_g"
-            required
-          />
-          <Input
-            type="number"
-            min={0}
-            step="0.1"
-            value={carbs}
-            onChange={(event) => setCarbs(event.target.value)}
-            placeholder="carbs_g"
-            required
-          />
-          <Input
-            type="number"
-            min={0}
-            step="0.1"
-            value={fat}
-            onChange={(event) => setFat(event.target.value)}
-            placeholder="fat_g"
-            required
-          />
-        </div>
-
-        <textarea
-          className="min-h-20 w-full rounded-xl border border-slate-200 bg-white/90 p-2 text-sm text-slate-800 outline-none ring-blue-200 focus:ring-2"
-          placeholder="Notes (optional)"
-          value={notes}
-          onChange={(event) => setNotes(event.target.value)}
-        />
-
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-
-        <div className="flex gap-2">
-          <Button type="submit" disabled={loading}>
-            {loading ? "Adding..." : "Add meal"}
-          </Button>
-          <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} disabled={loading}>
-            Close
+    <>
+      <Card className="space-y-5">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">Manual entry</p>
+            <h2 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">Add a meal manually</h2>
+            <p className="text-sm leading-7 text-[#6f685f]">Useful when you want full control over title, macros, and notes.</p>
+          </div>
+          <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
+            Cancel
           </Button>
         </div>
-      </form>
-    </Card>
+
+        <form className="space-y-4" onSubmit={onSubmit}>
+          <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4">
+            <label className="space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Meal title</span>
+              <Input
+                value={title}
+                onChange={(event) => setTitle(event.target.value)}
+                placeholder="Chicken avocado bowl"
+                required
+                className="bg-white"
+              />
+            </label>
+          </div>
+
+          <div className="grid gap-3 md:grid-cols-2">
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Meal type</span>
+              <select
+                className={selectClassName}
+                value={mealType}
+                onChange={(event) => setMealType(event.target.value)}
+              >
+                <option value="breakfast">Breakfast</option>
+                <option value="lunch">Lunch</option>
+                <option value="dinner">Dinner</option>
+                <option value="snack">Snack</option>
+              </select>
+            </label>
+
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Date and time</span>
+              <Input
+                type="datetime-local"
+                value={eatenAt}
+                onChange={(event) => setEatenAt(event.target.value)}
+                required
+                className="bg-white"
+              />
+            </label>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Calories</span>
+              <Input type="number" min={0} step="1" value={kcal} onChange={(event) => setKcal(event.target.value)} placeholder="520" required className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Protein</span>
+              <Input type="number" min={0} step="0.1" value={protein} onChange={(event) => setProtein(event.target.value)} placeholder="32" required className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Carbs</span>
+              <Input type="number" min={0} step="0.1" value={carbs} onChange={(event) => setCarbs(event.target.value)} placeholder="45" required className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Fat</span>
+              <Input type="number" min={0} step="0.1" value={fat} onChange={(event) => setFat(event.target.value)} placeholder="18" required className="bg-white" />
+            </label>
+          </div>
+
+          <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4">
+            <label className="space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Notes</span>
+              <textarea
+                className={textareaClassName}
+                placeholder="Anything useful to remember about this meal."
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+              />
+            </label>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] border border-black/6 bg-white/62 px-4 py-3.5">
+            <div className="space-y-1 text-sm">
+              {error ? <p className="text-[#8a3d30]">{error}</p> : null}
+              {!error ? <p className="text-[#6f685f]">Manual meals show up right away in Today and History.</p> : null}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button type="submit" disabled={loading}>
+                {loading ? "Adding..." : "Add meal"}
+              </Button>
+              <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} disabled={loading}>
+                Close
+              </Button>
+            </div>
+          </div>
+        </form>
+      </Card>
+
+      {typeof document !== "undefined" && copyModal ? createPortal(copyModal, document.body) : null}
+    </>
   );
 }
