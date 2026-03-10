@@ -7,6 +7,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/today",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 import { DashboardNav } from "@/src/components/navigation/dashboard-nav";

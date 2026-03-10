@@ -65,6 +65,18 @@ const previewRows = [
   { label: "Fat", value: "58 g / 70 g", width: "83%", color: "#97b08f" },
 ]
 
+const meals = [
+  { name: "Greek yogurt bowl", kcal: "420", time: "08:10" },
+  { name: "Chicken rice plate", kcal: "610", time: "12:45" },
+  { name: "Salmon and potatoes", kcal: "530", time: "19:20" },
+] as const;
+
+const microStats = [
+  { label: "Logging", value: "AI or manual" },
+  { label: "Focus", value: "Calories and macros" },
+  { label: "Rhythm", value: "Goals stay visible" },
+] as const;
+
 export default function Home() {
   return (
     <>

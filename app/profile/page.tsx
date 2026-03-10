@@ -9,6 +9,10 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/profile",
   },
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 import { requireServerUserIdWithOnboarding } from "@/src/lib/auth/server-session";
 import { GoalsForm } from "@/src/features/profile/components/goals-form";
