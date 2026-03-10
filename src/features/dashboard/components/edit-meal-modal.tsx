@@ -11,9 +11,13 @@ import type { Meal } from "@/src/types/meal";
 interface EditMealModalProps {
   meal: Meal;
   onUpdated: () => Promise<void>;
+  triggerClassName?: string;
 }
 
-export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
+const textareaClassName =
+  "min-h-24 w-full rounded-[18px] border border-black/8 bg-white px-3.5 py-3 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2";
+
+export function EditMealModal({ meal, onUpdated, triggerClassName }: EditMealModalProps) {
   const [open, setOpen] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -97,51 +101,84 @@ export function EditMealModal({ meal, onUpdated }: EditMealModalProps) {
 
   if (!open) {
     return (
-      <Button variant="ghost" onClick={() => setOpen(true)}>
+      <Button variant="ghost" className={triggerClassName} onClick={() => setOpen(true)}>
         Edit
       </Button>
     );
   }
 
   const modalContent = (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/35 p-4 backdrop-blur-sm">
-      <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-2xl border border-white/70 bg-white/95 p-5 shadow-2xl">
-        <h3 className="mb-4 text-lg font-semibold text-slate-900">Edit meal</h3>
-        <div className="space-y-3">
-          <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Title" />
-          <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
-            <Input value={kcal} onChange={(event) => setKcal(event.target.value)} placeholder="kcal" />
-            <Input
-              value={protein}
-              onChange={(event) => setProtein(event.target.value)}
-              placeholder="protein_g"
-            />
-            <Input value={carbs} onChange={(event) => setCarbs(event.target.value)} placeholder="carbs_g" />
-            <Input value={fat} onChange={(event) => setFat(event.target.value)} placeholder="fat_g" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/28 p-4 backdrop-blur-sm">
+      <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-[28px] border border-black/8 bg-white/92 p-5 shadow-[0_24px_48px_rgba(21,21,21,0.14)] sm:p-6">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-1.5">
+            <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">Edit meal</p>
+            <h3 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">Refine this entry</h3>
+            <p className="text-sm text-[#6f685f]">Update the title, macros, or notes without leaving the dashboard.</p>
           </div>
-          <textarea
-            value={notes}
-            onChange={(event) => setNotes(event.target.value)}
-            className="min-h-20 w-full rounded-xl border border-slate-200 bg-white/90 p-2 text-sm text-slate-800 outline-none ring-blue-200 focus:ring-2"
-            placeholder="Meal description"
-          />
-          {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        </div>
-        <div className="mt-4 flex gap-2">
-          <Button onClick={onSubmit} disabled={saving || deleting}>
-            {saving ? "Saving..." : "Save"}
-          </Button>
-          <Button
-            variant="ghost"
-            onClick={onDelete}
-            disabled={saving || deleting}
-            className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-          >
-            {deleting ? "Deleting..." : "Delete meal"}
-          </Button>
           <Button variant="ghost" onClick={() => setOpen(false)} disabled={saving || deleting}>
-            Cancel
+            Close
           </Button>
+        </div>
+
+        <div className="mt-5 space-y-4">
+          <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4">
+            <label className="space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Meal title</span>
+              <Input value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Meal title" className="bg-white" />
+            </label>
+          </div>
+
+          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Calories</span>
+              <Input value={kcal} onChange={(event) => setKcal(event.target.value)} placeholder="kcal" className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Protein</span>
+              <Input value={protein} onChange={(event) => setProtein(event.target.value)} placeholder="protein" className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Carbs</span>
+              <Input value={carbs} onChange={(event) => setCarbs(event.target.value)} placeholder="carbs" className="bg-white" />
+            </label>
+            <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Fat</span>
+              <Input value={fat} onChange={(event) => setFat(event.target.value)} placeholder="fat" className="bg-white" />
+            </label>
+          </div>
+
+          <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4">
+            <label className="space-y-1.5 text-sm text-[#4f4a43]">
+              <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Notes</span>
+              <textarea
+                value={notes}
+                onChange={(event) => setNotes(event.target.value)}
+                className={textareaClassName}
+                placeholder="Meal description"
+              />
+            </label>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] border border-black/6 bg-white/62 px-4 py-3.5">
+            <div className="space-y-1 text-sm">
+              {error ? <p className="text-[#8a3d30]">{error}</p> : null}
+              {!error ? <p className="text-[#6f685f]">Changes will appear immediately in Today and History.</p> : null}
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={onSubmit} disabled={saving || deleting}>
+                {saving ? "Saving..." : "Save changes"}
+              </Button>
+              <Button
+                variant="ghost"
+                onClick={onDelete}
+                disabled={saving || deleting}
+                className="border-[#e9c7bf] text-[#8a3d30] hover:bg-[#f5dfdb] hover:text-[#7d3428]"
+              >
+                {deleting ? "Deleting..." : "Delete meal"}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

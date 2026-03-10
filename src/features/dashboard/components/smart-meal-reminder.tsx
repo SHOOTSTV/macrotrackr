@@ -56,10 +56,14 @@ export function SmartMealReminderCard({ day, reminder }: SmartMealReminderProps)
   }
 
   return (
-    <Card className="border-blue-200 bg-blue-50/60">
-      <h3 className="text-base font-semibold text-blue-900">Smart reminder</h3>
-      <p className="mt-1 text-sm text-blue-800">{reminder.message}</p>
-      <div className="mt-3">
+    <Card className="border-[#cfddd1] bg-[#e5eee2]">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#5d7361]">
+            Smart reminder
+          </p>
+          <p className="text-sm leading-7 text-[#2f4940]">{reminder.message}</p>
+        </div>
         <Button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
           Log {reminder.mealType}
         </Button>

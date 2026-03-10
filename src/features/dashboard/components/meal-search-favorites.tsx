@@ -1,9 +1,10 @@
-﻿"use client";
+"use client";
 
 import { useMemo, useState } from "react";
 import type { FocusEvent } from "react";
 import { useRouter } from "next/navigation";
 
+import { Badge } from "@/src/components/ui/badge";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
@@ -23,6 +24,9 @@ interface EditDraft {
   meal_type: MealType;
 }
 
+const selectClassName =
+  "w-full rounded-[18px] border border-black/8 bg-white px-3.5 py-2.5 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2";
+
 function toDraft(result: MealSearchResult): EditDraft {
   return {
     title: result.title,
@@ -32,6 +36,25 @@ function toDraft(result: MealSearchResult): EditDraft {
     fat_g: String(result.fat_g),
     meal_type: result.meal_type,
   };
+}
+
+function FavoriteIcon({ active }: { active: boolean }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 24 24"
+      fill={active ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth="1.8"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="M12 17.27 18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </svg>
+  );
 }
 
 export function MealSearchFavorites() {
@@ -87,7 +110,7 @@ export function MealSearchFavorites() {
       const body = (await response.json()) as SearchResponse;
       setResults(body.data);
     } catch (searchError) {
-      setError(searchError instanceof Error ? searchError.message : "Unknown error");
+      setError(searchError instanceof Error ? searchError.message : "Unexpected error");
     } finally {
       setLoading(false);
     }
@@ -156,7 +179,7 @@ export function MealSearchFavorites() {
       router.refresh();
       await fetchResults(query, favoritesOnly);
     } catch (submitError) {
-      setError(submitError instanceof Error ? submitError.message : "Unknown error");
+      setError(submitError instanceof Error ? submitError.message : "Unexpected error");
     } finally {
       setLoggingKey(null);
     }
@@ -174,19 +197,27 @@ export function MealSearchFavorites() {
 
   return (
     <div onFocusCapture={() => setIsSearchActive(true)} onBlurCapture={onSearchSectionBlur}>
-      <Card className="space-y-3">
-        <div>
-          <h2 className="text-lg font-semibold text-slate-900">Search meals & favorites</h2>
-          <p className="text-sm text-slate-600">Find previous meals and log them instantly.</p>
+      <Card className="space-y-4">
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#7a736b]">
+            Library
+          </p>
+          <h2 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">
+            Search meals & favorites
+          </h2>
+          <p className="max-w-sm text-sm leading-7 text-[#6f685f]">
+            Find something you already ate, tweak it if needed, and log it again without friction.
+          </p>
         </div>
 
-        <div className="grid gap-2 md:grid-cols-[1fr_auto]">
+        <div className="grid gap-2 md:grid-cols-[1fr_auto] md:items-center">
           <Input
+            className="h-12 rounded-[18px] bg-[#f8f4ee]"
             value={query}
             onChange={(event) => void onSearchChange(event.target.value)}
             placeholder="Search your meals..."
           />
-          <label className="inline-flex items-center gap-2 rounded-xl border border-slate-200 px-3 py-2 text-sm text-slate-700">
+          <label className="inline-flex items-center gap-2 rounded-[18px] border border-black/8 bg-white/72 px-3 py-3 text-sm text-[#4f4a43]">
             <input
               type="checkbox"
               checked={favoritesOnly}
@@ -196,20 +227,26 @@ export function MealSearchFavorites() {
           </label>
         </div>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {error ? <p className="text-sm text-[#8a3d30]">{error}</p> : null}
 
         {isSearchActive && !shouldShowResults ? (
-          <p className="text-sm text-slate-500">Search your meals...</p>
+          <div className="rounded-[20px] border border-dashed border-black/10 bg-[#f8f4ee] px-4 py-5 text-sm text-[#6f685f]">
+            Start typing to search your meal library.
+          </div>
         ) : null}
         {shouldRenderSearchContent && !loading && results.length === 0 ? (
-          <p className="text-sm text-slate-500">No meals found.</p>
+          <div className="rounded-[20px] border border-dashed border-black/10 bg-[#f8f4ee] px-4 py-5 text-sm text-[#6f685f]">
+            No meals found for this search.
+          </div>
         ) : null}
 
         {shouldRenderSearchContent && loading ? (
-          <p className="text-sm text-slate-500">Searching...</p>
+          <div className="rounded-[20px] border border-dashed border-black/10 bg-[#f8f4ee] px-4 py-5 text-sm text-[#6f685f]">
+            Searching your library...
+          </div>
         ) : null}
 
-        <div className="space-y-2">
+        <div className="space-y-2.5">
           {shouldRenderSearchContent
             ? results.map((result) => {
               const itemKey = `${result.source}-${result.id}`;
@@ -217,32 +254,39 @@ export function MealSearchFavorites() {
               const isLogging = loggingKey === itemKey;
 
               return (
-                <div key={itemKey} className="rounded-xl border border-slate-200 bg-white/80 p-3">
-                  <div className="flex flex-wrap items-start justify-between gap-2">
-                    <div>
-                      <p className="font-medium text-slate-900">{result.title}</p>
-                      <p className="text-xs text-slate-500">
-                        {result.kcal} kcal | P {result.protein_g}g | C {result.carbs_g}g | F {result.fat_g}g
-                      </p>
+                <div key={itemKey} className="rounded-[22px] border border-black/8 bg-[#f8f4ee] p-4">
+                  <div className="flex flex-wrap items-start justify-between gap-3">
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <p className="font-medium text-[#151515]">{result.title}</p>
+                        <Badge>{result.meal_type}</Badge>
+                      </div>
+                      <div className="flex flex-wrap gap-2 text-xs">
+                        <span className="rounded-full bg-[#edf1ea] px-3 py-1.5 text-[#365141]">kcal {result.kcal}</span>
+                        <span className="rounded-full bg-[#e4ece9] px-3 py-1.5 text-[#44747b]">protein {result.protein_g}g</span>
+                        <span className="rounded-full bg-[#f2eadb] px-3 py-1.5 text-[#7a5b33]">carbs {result.carbs_g}g</span>
+                        <span className="rounded-full bg-[#ece7f0] px-3 py-1.5 text-[#66557e]">fat {result.fat_g}g</span>
+                      </div>
                     </div>
                     <button
                       type="button"
-                      className="text-lg leading-none"
+                      className={`rounded-full border border-black/8 p-2 transition ${result.is_favorite ? "bg-[#151515] text-[#f4efe7]" : "bg-white text-[#6f685f] hover:bg-[#f3ede5]"}`}
                       aria-label={result.is_favorite ? "Remove favorite" : "Add favorite"}
                       onClick={() => void toggleFavorite(result)}
                     >
-                      {result.is_favorite ? "\u2605" : "\u2606"}
+                      <FavoriteIcon active={result.is_favorite} />
                     </button>
                   </div>
 
                   {isEditing && editDraft ? (
-                    <div className="mt-2 space-y-2">
+                    <div className="mt-3 space-y-3 rounded-[20px] border border-black/6 bg-white/70 p-3.5">
                       <Input
                         value={editDraft.title}
                         onChange={(event) =>
                           setEditDraft((current) =>
                             current ? { ...current, title: event.target.value } : current,
                           )}
+                        className="bg-white"
                       />
                       <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
                         <Input
@@ -252,6 +296,7 @@ export function MealSearchFavorites() {
                             setEditDraft((current) =>
                               current ? { ...current, kcal: event.target.value } : current,
                             )}
+                          className="bg-white"
                         />
                         <Input
                           type="number"
@@ -260,6 +305,7 @@ export function MealSearchFavorites() {
                             setEditDraft((current) =>
                               current ? { ...current, protein_g: event.target.value } : current,
                             )}
+                          className="bg-white"
                         />
                         <Input
                           type="number"
@@ -268,6 +314,7 @@ export function MealSearchFavorites() {
                             setEditDraft((current) =>
                               current ? { ...current, carbs_g: event.target.value } : current,
                             )}
+                          className="bg-white"
                         />
                         <Input
                           type="number"
@@ -276,10 +323,11 @@ export function MealSearchFavorites() {
                             setEditDraft((current) =>
                               current ? { ...current, fat_g: event.target.value } : current,
                             )}
+                          className="bg-white"
                         />
                       </div>
                       <select
-                        className="w-full rounded-xl border border-slate-200 bg-white/90 px-3 py-2 text-sm text-slate-800 outline-none ring-blue-200 focus:ring-2"
+                        className={selectClassName}
                         value={editDraft.meal_type}
                         onChange={(event) =>
                           setEditDraft((current) =>
@@ -299,7 +347,7 @@ export function MealSearchFavorites() {
                     </div>
                   ) : null}
 
-                  <div className="mt-2 flex gap-2">
+                  <div className="mt-3 flex flex-wrap gap-2">
                     <Button
                       type="button"
                       disabled={isLogging}
@@ -327,7 +375,7 @@ export function MealSearchFavorites() {
                         setEditDraft(toDraft(result));
                       }}
                     >
-                      {isEditing ? "Cancel" : "Edit"}
+                      {isEditing ? "Cancel" : "Edit before logging"}
                     </Button>
                   </div>
                 </div>
