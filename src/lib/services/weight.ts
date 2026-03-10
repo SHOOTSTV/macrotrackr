@@ -37,3 +37,4 @@ export async function listWeightLogsForRange(userId: string, from: string, to: s
 }
 
 export { buildWeightTrend } from "./weight-trend";
+

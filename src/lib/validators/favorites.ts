@@ -61,3 +61,4 @@ export const logFromTemplateSchema = z.object({
 export type CreateFavoriteInput = z.infer<typeof createFavoriteSchema>;
 export type MealSearchQueryInput = z.infer<typeof mealSearchQuerySchema>;
 export type LogFromTemplateInput = z.infer<typeof logFromTemplateSchema>;
+

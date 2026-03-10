@@ -47,3 +47,4 @@ export async function getAuthHeaders(): Promise<HeadersInit> {
     Authorization: `Bearer ${token}`,
   };
 }
+

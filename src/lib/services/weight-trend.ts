@@ -76,3 +76,4 @@ export function buildWeightTrend(logs: WeightLog[], from: string, to: string): W
     },
   };
 }
+

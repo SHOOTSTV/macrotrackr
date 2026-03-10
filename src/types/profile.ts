@@ -17,3 +17,4 @@ export interface NutritionGoalsInput {
   fat_g_target: number;
   weekly_target: number;
 }
+

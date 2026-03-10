@@ -51,3 +51,4 @@ export async function completeOnboarding(userId: string, input: OnboardingInput)
 
   return nutritionGoals;
 }
+

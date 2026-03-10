@@ -15,3 +15,4 @@ describe("weightRangeQuerySchema", () => {
     expect(parsed.success).toBe(false);
   });
 });
+

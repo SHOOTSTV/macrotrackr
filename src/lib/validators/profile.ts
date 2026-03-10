@@ -10,3 +10,4 @@ export const nutritionGoalsSchema = z.object({
 });
 
 export type NutritionGoalsPayload = z.infer<typeof nutritionGoalsSchema>;
+

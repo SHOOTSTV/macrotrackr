@@ -9,3 +9,4 @@ export const supabasePublicServer = createClient(
     auth: { persistSession: false },
   },
 );
+

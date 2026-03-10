@@ -41,3 +41,4 @@ describe("computeAdaptiveGoals", () => {
     expect(lose.kcal_target).toBeLessThan(gain.kcal_target);
   });
 });
+

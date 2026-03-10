@@ -105,3 +105,4 @@ describe("recalculateProgress", () => {
     expect(tooHigh.weeklyGoalHit).toBe(false);
   });
 });
+

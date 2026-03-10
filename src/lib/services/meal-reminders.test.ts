@@ -56,3 +56,4 @@ describe("detectSmartMealReminder", () => {
     expect(reminder?.mealType).toBe("dinner");
   });
 });
+
