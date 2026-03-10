@@ -17,12 +17,12 @@ export function Button({
   return (
     <button
       className={cn(
-        "inline-flex cursor-pointer items-center justify-center rounded-xl px-3.5 py-2 text-sm font-medium transition disabled:cursor-not-allowed disabled:opacity-50",
-        variant === "primary" &&
-          "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-[0_6px_20px_rgba(59,130,246,0.35)] hover:from-blue-500 hover:to-indigo-500",
-        variant === "ghost" &&
-          "border border-slate-200 bg-white/80 text-slate-700 hover:bg-slate-100/90 hover:text-slate-900",
-        className
+        "inline-flex cursor-pointer items-center justify-center rounded-full px-4 py-2.5 text-sm font-medium transition duration-200 disabled:cursor-not-allowed disabled:opacity-50",
+        variant === "primary"
+          && "bg-[#151515] text-[#f4efe7] hover:-translate-y-0.5 hover:bg-[#222222]",
+        variant === "ghost"
+          && "border border-black/8 bg-white/72 text-[#151515] hover:bg-black/4",
+        className,
       )}
       {...props}
     >
@@ -30,3 +30,4 @@ export function Button({
     </button>
   );
 }
+

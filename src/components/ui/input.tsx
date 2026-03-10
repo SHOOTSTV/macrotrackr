@@ -10,10 +10,11 @@ export function Input({ className, ...props }: InputProps) {
   return (
     <input
       className={cn(
-        "w-full rounded-xl border border-slate-200 bg-white/90 px-3 py-2 text-sm text-slate-800 outline-none ring-blue-200 transition focus:ring-2",
+        "w-full rounded-[18px] border border-black/8 bg-white/82 px-3.5 py-2.5 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2",
         className,
       )}
       {...props}
     />
   );
 }
+

@@ -15,10 +15,10 @@ export function Badge({
   return (
     <span
       className={cn(
-        "inline-flex rounded-full px-2.5 py-1 text-xs font-semibold",
-        variant === "default" && "bg-blue-50 text-blue-700",
-        variant === "warning" && "bg-amber-100 text-amber-700",
-        className
+        "inline-flex rounded-full border px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.18em]",
+        variant === "default" && "border-[#dbe4d7] bg-[#edf1ea] text-[#365141]",
+        variant === "warning" && "border-[#ead8b6] bg-[#f2eadb] text-[#7a5b33]",
+        className,
       )}
     >
       {children}
