@@ -69,3 +69,4 @@ describe("mergeSearchResults", () => {
     expect(results[1].title).toBe("Beef wrap");
   });
 });
+

@@ -55,3 +55,4 @@ export const rangeQuerySchema = z
 
 export type CreateMealInput = z.infer<typeof createMealSchema>;
 export type PatchMealInput = z.infer<typeof patchMealSchema>;
+

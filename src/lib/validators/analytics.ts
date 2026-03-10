@@ -9,3 +9,4 @@ export const macroAlertEventSchema = z.object({
 });
 
 export type MacroAlertEventInput = z.infer<typeof macroAlertEventSchema>;
+

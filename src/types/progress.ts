@@ -25,3 +25,4 @@ export interface WeeklyProgressPayload {
   remaining_days: number;
   weekly_goal_hit: boolean;
 }
+

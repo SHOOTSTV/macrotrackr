@@ -22,3 +22,4 @@ export interface OnboardingInput {
   activity_level: ActivityLevel;
   goal: UserGoal;
 }
+

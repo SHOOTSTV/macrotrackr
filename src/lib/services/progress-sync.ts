@@ -117,3 +117,4 @@ export async function synchronizeUserProgress(userId: string): Promise<void> {
 
   await Promise.all(analyticsTasks);
 }
+

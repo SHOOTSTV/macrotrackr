@@ -37,3 +37,4 @@ export async function GET(request: NextRequest) {
     return serverError(error instanceof Error ? error.message : undefined);
   }
 }
+

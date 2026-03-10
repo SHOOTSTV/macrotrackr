@@ -63,3 +63,4 @@ export interface MealSearchResult {
   eaten_at: string | null;
   is_favorite: boolean;
 }
+

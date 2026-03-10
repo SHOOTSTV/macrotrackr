@@ -27,3 +27,4 @@ export async function trackAnalyticsEvent(
     throw new Error(error.message);
   }
 }
+

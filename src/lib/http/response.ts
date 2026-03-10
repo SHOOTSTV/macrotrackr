@@ -44,3 +44,4 @@ export function unauthorized(message = "Unauthorized") {
 export function fromZodError(error: ZodError) {
   return badRequest("Invalid payload", error.flatten());
 }
+

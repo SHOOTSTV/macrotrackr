@@ -77,3 +77,4 @@ export function mergeSearchResults({ favorites, meals }: SearchRows): MealSearch
 
   return [...mappedFavorites, ...mappedHistory];
 }
+

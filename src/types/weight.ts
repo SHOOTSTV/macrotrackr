@@ -23,3 +23,4 @@ export interface WeightTrendPayload {
   points: WeightTrendPoint[];
   summary: WeightTrendSummary;
 }
+
