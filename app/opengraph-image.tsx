@@ -54,7 +54,7 @@ export default function OpenGraphImage() {
             background: "rgba(2,6,23,0.35)",
           }}
         >
-          MacroTrackr • AI-first tracking
+          MacroTrackr / AI-first tracking
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 980 }}>
@@ -78,3 +78,4 @@ export default function OpenGraphImage() {
     { ...size },
   );
 }
+

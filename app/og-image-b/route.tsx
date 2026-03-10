@@ -40,7 +40,7 @@ export async function GET() {
             background: "rgba(15, 23, 42, 0.35)",
           }}
         >
-          MacroTrackr ⚡
+          MacroTrackr / fast tracking
         </div>
 
         <div style={{ display: "flex", flexDirection: "column", gap: 18, maxWidth: 920 }}>
@@ -60,3 +60,4 @@ export async function GET() {
     },
   );
 }
+
