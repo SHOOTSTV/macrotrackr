@@ -10,7 +10,7 @@ import {
   unauthorized,
 } from "@/src/lib/http/response";
 import { getClientIp } from "@/src/lib/http/request";
-import { trackAnalyticsEvent } from "@/src/lib/services/analytics";
+import { trackAnalyticsEvent, trackAnalyticsEventOnce } from "@/src/lib/services/analytics";
 import { completeOnboarding, getUserProfile } from "@/src/lib/services/onboarding";
 import { onboardingSchema } from "@/src/lib/validators/onboarding";
 
@@ -48,6 +48,13 @@ export async function PUT(request: NextRequest) {
     }
 
     const goals = await completeOnboarding(userId, parsed.data);
+
+    await trackAnalyticsEventOnce(userId, "signup_completed", {
+      goal: parsed.data.goal,
+      activity_level: parsed.data.activity_level,
+      source: "onboarding_flow",
+    });
+
     await trackAnalyticsEvent(userId, "onboarding_completed", {
       goal: parsed.data.goal,
       activity_level: parsed.data.activity_level,
