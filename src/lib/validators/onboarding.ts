@@ -10,3 +10,4 @@ export const onboardingSchema = z.object({
 });
 
 export type OnboardingPayload = z.infer<typeof onboardingSchema>;
+

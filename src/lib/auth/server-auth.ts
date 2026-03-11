@@ -38,3 +38,4 @@ export async function requireAuthenticatedUserId(request: NextRequest): Promise<
 
   return data.user.id;
 }
+

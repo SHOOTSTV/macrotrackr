@@ -12,8 +12,8 @@ const HistoryChart = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="flex h-80 items-center justify-center rounded-2xl border border-white/70 bg-white/80">
-        <p className="text-sm text-slate-400">Loading chart...</p>
+      <div className="flex h-[22rem] items-center justify-center rounded-[24px] border border-black/8 bg-[#f8f4ee]">
+        <p className="text-sm text-[#8b847d]">Loading chart...</p>
       </div>
     ),
   },
@@ -21,8 +21,11 @@ const HistoryChart = dynamic(
 
 interface HistoryChartLazyProps {
   days: DailySummary[];
+  embedded?: boolean;
+  title?: string;
+  className?: string;
 }
 
-export function HistoryChartLazy({ days }: HistoryChartLazyProps) {
-  return <HistoryChart days={days} />;
+export function HistoryChartLazy({ days, embedded, title, className }: HistoryChartLazyProps) {
+  return <HistoryChart days={days} embedded={embedded} title={title} className={className} />;
 }

@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist_Mono, Jost } from "next/font/google";
 
 import { SonnerToaster } from "@/src/components/ui/sonner";
 import "./globals.css";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const jost = Jost({
+  variable: "--font-jost",
   subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
 });
 
 const geistMono = Geist_Mono({
@@ -17,11 +18,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL("https://macrotrackr.vercel.app"),
   title: {
-    default: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
+    default: "AI Macro Tracker for Meal Logging",
     template: "%s | MacroTrackr",
   },
   description:
-    "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
+    "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
   alternates: {
     canonical: "/",
   },
@@ -33,9 +34,9 @@ export const metadata: Metadata = {
     type: "website",
     url: "/",
     siteName: "MacroTrackr",
-    title: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
+    title: "AI Macro Tracker for Meal Logging",
     description:
-      "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
+      "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
     images: [
       {
         url: "/og-image-fallback.jpg",
@@ -51,9 +52,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "MacroTrackr AI Nutrition Tracker for Fast Macro Logging",
+    title: "AI Macro Tracker for Meal Logging",
     description:
-      "Log meals in seconds with AI, track calories and macros in a clean dashboard, and stay consistent with clear daily nutrition goals.",
+      "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
     images: ["/og-image-fallback.jpg"],
   },
 };
@@ -65,12 +66,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${jost.variable} ${geistMono.variable} antialiased`}>
         {children}
         <SonnerToaster />
       </body>
     </html>
   );
 }
+

@@ -42,3 +42,4 @@ export function computeAdaptiveGoals(input: OnboardingInput): Omit<NutritionGoal
     fat_g_target: round1(fatG),
   };
 }
+

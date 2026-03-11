@@ -43,3 +43,4 @@ describe("buildWeightTrend", () => {
     expect(trend.summary.trend_direction).toBe("unknown");
   });
 });
+

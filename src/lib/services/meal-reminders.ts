@@ -96,3 +96,4 @@ export function detectSmartMealReminder(
     message: `You usually log ${overdueMatch.mealType} around this time. Want to add it now?`,
   };
 }
+

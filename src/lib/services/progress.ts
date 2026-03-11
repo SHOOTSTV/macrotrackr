@@ -109,3 +109,4 @@ export function recalculateProgress(input: RecalculateProgressInput): ProgressSn
     weeklyGoalHit: weeklyCompletedDays >= weeklyTarget,
   };
 }
+

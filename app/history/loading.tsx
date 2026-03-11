@@ -1,7 +1,7 @@
 function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={`animate-pulse rounded-xl bg-slate-200/60 ${className ?? ""}`}
+      className={`animate-pulse rounded-xl bg-[#ddd6ca]/70 ${className ?? ""}`}
     />
   );
 }
@@ -9,7 +9,7 @@ function Skeleton({ className }: { className?: string }) {
 export default function HistoryLoading() {
   return (
     <main className="app-shell space-y-6">
-      <header className="rounded-2xl border border-white/70 bg-white/80 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur">
+      <header className="rounded-[30px] border border-black/8 bg-white/72 p-6 shadow-[0_20px_40px_rgba(21,21,21,0.06)] backdrop-blur">
         <Skeleton className="mb-2 h-4 w-20" />
         <Skeleton className="mb-4 h-8 w-64" />
         <Skeleton className="h-10 w-72" />
@@ -26,3 +26,6 @@ export default function HistoryLoading() {
     </main>
   );
 }
+
+
+
