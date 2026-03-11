@@ -42,6 +42,44 @@ function isEmptyProgress(state: ProgressState): boolean {
   );
 }
 
+function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden="true" className={`animate-pulse rounded-[18px] bg-[#ddd6ca]/80 ${className ?? ""}`} />;
+}
+
+function StreakWeeklyCardSkeleton() {
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between gap-2">
+        <Skeleton className="h-7 w-40 rounded-[16px]" />
+        <Skeleton className="h-11 w-24 rounded-full" />
+      </div>
+
+      <div className="grid gap-3 sm:grid-cols-3">
+        <div className="rounded-[22px] bg-[#e4ece6] p-4">
+          <Skeleton className="h-4 w-20 rounded-full bg-white/55" />
+          <Skeleton className="mt-3 h-10 w-12 rounded-[16px] bg-white/65" />
+        </div>
+        <div className="rounded-[22px] bg-[#e6dfed] p-4">
+          <Skeleton className="h-4 w-16 rounded-full bg-white/55" />
+          <Skeleton className="mt-3 h-10 w-14 rounded-[16px] bg-white/65" />
+        </div>
+        <div className="rounded-[22px] bg-[#e4ece6] p-4">
+          <Skeleton className="h-4 w-14 rounded-full bg-white/55" />
+          <Skeleton className="mt-3 h-10 w-16 rounded-[16px] bg-white/65" />
+        </div>
+      </div>
+
+      <div className="space-y-2">
+        <div className="flex items-center justify-between gap-3">
+          <Skeleton className="h-4 w-28 rounded-full" />
+          <Skeleton className="h-4 w-28 rounded-full" />
+        </div>
+        <Skeleton className="h-3 w-full rounded-full bg-[#ddd9d2]" />
+      </div>
+    </div>
+  );
+}
+
 export function StreakWeeklyCard({ mode = "today" }: StreakWeeklyCardProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -84,20 +122,18 @@ export function StreakWeeklyCard({ mode = "today" }: StreakWeeklyCardProps) {
 
   return (
     <Card>
-      <div className="mb-4 flex items-center justify-between gap-2">
-        <h2 className="text-base font-semibold text-[#151515]">
-          {mode === "today" ? "Streak & weekly goal" : "Weekly progress summary"}
-        </h2>
-        {!loading ? (
+      {loading ? (
+        <StreakWeeklyCardSkeleton />
+      ) : (
+        <div className="mb-4 flex items-center justify-between gap-2">
+          <h2 className="text-base font-semibold text-[#151515]">
+            {mode === "today" ? "Streak & weekly goal" : "Weekly progress summary"}
+          </h2>
           <Button type="button" variant="ghost" onClick={() => void load()}>
             Refresh
           </Button>
-        ) : null}
-      </div>
-
-      {loading ? (
-        <p className="text-sm text-[#6f685f]">Loading streak and weekly progress...</p>
-      ) : null}
+        </div>
+      )}
 
       {!loading && error ? (
         <div className="space-y-2">

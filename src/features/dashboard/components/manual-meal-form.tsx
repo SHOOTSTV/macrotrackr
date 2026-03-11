@@ -154,21 +154,21 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
     );
   }
 
-  return (
-    <>
-      <Card className="space-y-5">
+  const manualFormModal = (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#151515]/28 p-4 backdrop-blur-sm">
+      <Card className="max-h-[88vh] w-full max-w-3xl overflow-y-auto bg-white/92 p-5 sm:p-6">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <div className="space-y-1.5">
             <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">Manual entry</p>
             <h2 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">Add a meal manually</h2>
             <p className="text-sm leading-7 text-[#6f685f]">Useful when you want full control over title, macros, and notes.</p>
           </div>
-          <Button type="button" variant="ghost" onClick={() => setIsOpen(false)}>
+          <Button type="button" variant="ghost" onClick={() => setIsOpen(false)} disabled={loading}>
             Cancel
           </Button>
         </div>
 
-        <form className="space-y-4" onSubmit={onSubmit}>
+        <form className="mt-5 space-y-4" onSubmit={onSubmit}>
           <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4">
             <label className="space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Meal title</span>
@@ -182,7 +182,7 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
             </label>
           </div>
 
-          <div className="grid gap-3 md:grid-cols-2">
+          <div className="grid gap-3 lg:grid-cols-2">
             <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Meal type</span>
               <select
@@ -204,27 +204,27 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
                 value={eatenAt}
                 onChange={(event) => setEatenAt(event.target.value)}
                 required
-                className="bg-white"
+                className="bg-white text-[15px] sm:text-sm"
               />
             </label>
           </div>
 
-          <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <div className="grid gap-3 md:grid-cols-2 2xl:grid-cols-4">
             <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Calories</span>
-              <Input type="number" min={0} step="1" value={kcal} onChange={(event) => setKcal(event.target.value)} placeholder="520" required className="bg-white" />
+              <Input type="number" min={0} step="1" inputMode="numeric" value={kcal} onChange={(event) => setKcal(event.target.value)} placeholder="520" required className="bg-white" />
             </label>
             <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Protein</span>
-              <Input type="number" min={0} step="0.1" value={protein} onChange={(event) => setProtein(event.target.value)} placeholder="32" required className="bg-white" />
+              <Input type="number" min={0} step="0.1" inputMode="decimal" value={protein} onChange={(event) => setProtein(event.target.value)} placeholder="32" required className="bg-white" />
             </label>
             <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Carbs</span>
-              <Input type="number" min={0} step="0.1" value={carbs} onChange={(event) => setCarbs(event.target.value)} placeholder="45" required className="bg-white" />
+              <Input type="number" min={0} step="0.1" inputMode="decimal" value={carbs} onChange={(event) => setCarbs(event.target.value)} placeholder="45" required className="bg-white" />
             </label>
             <label className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4 space-y-1.5 text-sm text-[#4f4a43]">
               <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">Fat</span>
-              <Input type="number" min={0} step="0.1" value={fat} onChange={(event) => setFat(event.target.value)} placeholder="18" required className="bg-white" />
+              <Input type="number" min={0} step="0.1" inputMode="decimal" value={fat} onChange={(event) => setFat(event.target.value)} placeholder="18" required className="bg-white" />
             </label>
           </div>
 
@@ -256,7 +256,12 @@ export function ManualMealForm({ copyCandidates, enableCopyPrevious = true }: Ma
           </div>
         </form>
       </Card>
+    </div>
+  );
 
+  return (
+    <>
+      {typeof document !== "undefined" ? createPortal(manualFormModal, document.body) : null}
       {typeof document !== "undefined" && copyModal ? createPortal(copyModal, document.body) : null}
     </>
   );

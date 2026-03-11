@@ -27,6 +27,60 @@ interface EditDraft {
 const selectClassName =
   "w-full rounded-[18px] border border-black/8 bg-white px-3.5 py-2.5 text-sm text-[#151515] outline-none ring-[#d8e2d6] transition focus:ring-2";
 
+function Skeleton({ className }: { className?: string }) {
+  return <div aria-hidden="true" className={`animate-pulse rounded-[18px] bg-[#ddd6ca]/80 ${className ?? ""}`} />;
+}
+
+function SearchResultsSkeleton() {
+  return (
+    <div className="space-y-2.5">
+      <div className="rounded-[22px] border border-black/8 bg-[#f8f4ee] p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Skeleton className="h-6 w-14 rounded-full bg-white/75" />
+              <Skeleton className="h-6 w-20 rounded-full bg-white/75" />
+            </div>
+            <Skeleton className="h-6 w-44 rounded-[14px]" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-10 rounded-full bg-white/80" />
+            <Skeleton className="h-10 w-24 rounded-full bg-white/80" />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+        </div>
+      </div>
+
+      <div className="rounded-[22px] border border-black/8 bg-[#f8f4ee] p-4">
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-2">
+              <Skeleton className="h-6 w-16 rounded-full bg-white/75" />
+              <Skeleton className="h-6 w-24 rounded-full bg-white/75" />
+            </div>
+            <Skeleton className="h-6 w-52 rounded-[14px]" />
+          </div>
+          <div className="flex gap-2">
+            <Skeleton className="h-10 w-10 rounded-full bg-white/80" />
+            <Skeleton className="h-10 w-24 rounded-full bg-white/80" />
+          </div>
+        </div>
+        <div className="mt-4 grid gap-2 sm:grid-cols-2">
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+          <Skeleton className="h-10 w-full rounded-xl bg-white/75" />
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function toDraft(result: MealSearchResult): EditDraft {
   return {
     title: result.title,
@@ -240,11 +294,7 @@ export function MealSearchFavorites() {
           </div>
         ) : null}
 
-        {shouldRenderSearchContent && loading ? (
-          <div className="rounded-[20px] border border-dashed border-black/10 bg-[#f8f4ee] px-4 py-5 text-sm text-[#6f685f]">
-            Searching your library...
-          </div>
-        ) : null}
+        {shouldRenderSearchContent && loading ? <SearchResultsSkeleton /> : null}
 
         <div className="space-y-2.5">
           {shouldRenderSearchContent
