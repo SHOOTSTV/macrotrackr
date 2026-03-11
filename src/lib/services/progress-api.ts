@@ -62,3 +62,4 @@ export async function getWeeklyProgress(userId: string): Promise<WeeklyProgressP
     weekly_goal_hit: completed >= weeklyTarget,
   };
 }
+

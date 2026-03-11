@@ -1,173 +1,283 @@
-import Link from "next/link";
+import type { Metadata } from "next"
+import { Jost } from "next/font/google"
+import Link from "next/link"
+
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600"],
+})
+
+export const metadata: Metadata = {
+  title: "MacroTrackr | Clear macro tracking, every day",
+  description:
+    "MacroTrackr helps you log meals quickly, stay on target, and keep your nutrition routine clear without extra noise.",
+  alternates: {
+    canonical: "/",
+  },
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  name: "MacroTrackr",
+  applicationCategory: "HealthApplication",
+  operatingSystem: "Web",
+  url: "https://macrotrackr.vercel.app",
+  description:
+    "A clear nutrition dashboard for calories, protein, carbs, and fats.",
+  offers: {
+    "@type": "Offer",
+    price: "0",
+    priceCurrency: "USD",
+  },
+}
+
+const navLinks = [{ href: "#features", label: "Features" }]
+
+const features = [
+  {
+    label: "Capture",
+    title: "Log meals without slowing down",
+    body: "Use the fastest input for the moment, then get back to your day.",
+  },
+  {
+    label: "Targets",
+    title: "Keep macros readable at a glance",
+    body: "Calories, protein, carbs, and fats stay visible while you log.",
+  },
+  {
+    label: "History",
+    title: "Review the day without the clutter",
+    body: "Your entries stay easy to scan, adjust, and trust over time.",
+  },
+]
+
+const heroHighlights = [
+  { value: "Targets", label: "Visible all day" },
+  { value: "Meals", label: "Quick to update" },
+  { value: "History", label: "Easy to review" },
+]
+
+const previewRows = [
+  { label: "Calories", value: "1,760 / 2,200", width: "80%", color: "#93c5fd" },
+  { label: "Protein", value: "122 g / 140 g", width: "87%", color: "#7dd3fc" },
+  { label: "Carbs", value: "186 g / 240 g", width: "78%", color: "#b6a7e8" },
+  { label: "Fat", value: "58 g / 70 g", width: "83%", color: "#97b08f" },
+]
+
+const meals = [
+  { name: "Greek yogurt bowl", kcal: "420", time: "08:10" },
+  { name: "Chicken rice plate", kcal: "610", time: "12:45" },
+  { name: "Salmon and potatoes", kcal: "530", time: "19:20" },
+] as const;
+
+const microStats = [
+  { label: "Logging", value: "AI or manual" },
+  { label: "Focus", value: "Calories and macros" },
+  { label: "Rhythm", value: "Goals stay visible" },
+] as const;
 
 export default function Home() {
   return (
-    <main className="app-shell relative flex min-h-screen max-w-6xl flex-col justify-center gap-5 py-8 md:py-12">
-      <div className="pointer-events-none absolute inset-x-0 -top-44 -z-10 h-144" />
-
-      <section className="rounded-4xl bg-linear-to-r from-sky-300/60 via-indigo-300/50 to-fuchsia-300/45 p-px shadow-[0_30px_90px_rgba(15,23,42,0.14)]">
-        <div className="rounded-[calc(2rem-1px)] border border-white/65 bg-white/78 p-6 backdrop-blur-2xl md:p-10">
-          <div className="mb-5 flex flex-wrap items-center gap-2">
-            <span className="rounded-full border border-blue-400/40 bg-linear-to-r from-blue-600 to-indigo-600 px-4 py-1.5 text-xs font-bold uppercase tracking-[0.14em] text-white shadow-[0_10px_24px_rgba(37,99,235,0.28)]">
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+      <main className={`${jost.className} min-h-screen bg-[#f4efe7] text-[#151515]`}>
+        <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-6 sm:px-6 lg:px-8">
+          <header className="flex items-center justify-between border-b border-black/8 pb-5">
+            <Link href="/" className="text-lg font-medium tracking-[-0.04em] text-[#151515]">
               MacroTrackr
-            </span>
-            <span className="rounded-full border border-indigo-200/70 bg-indigo-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-indigo-700">
-              AI-first tracking
-            </span>
-            <span className="rounded-full border border-violet-200/70 bg-violet-50/80 px-3 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-violet-700">
-              realtime dashboard
-            </span>
-          </div>
+            </Link>
 
-          <div className="grid gap-6 md:grid-cols-[1.08fr_0.92fr]">
-            <div>
-              <h1 className="text-balance text-4xl font-semibold leading-tight text-slate-950 md:text-6xl">
-                Your nutrition dashboard.
-              </h1>
-              <p className="mt-4 max-w-2xl text-base leading-relaxed text-slate-600 md:text-lg">
-                Direct AI ingestion, instant editing, and macro tracking you can
-                read at a glance. A fast, clear experience built for daily use.
+            <nav className="hidden items-center gap-8 text-sm text-[#5f5a53] md:flex">
+              {navLinks.map((item) => (
+                <a
+                  key={item.href}
+                  href={item.href}
+                  className="transition-colors duration-200 hover:text-[#151515]"
+                >
+                  {item.label}
+                </a>
+              ))}
+            </nav>
+
+            <Link
+              href="/auth"
+              className="rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
+            >
+              Sign in
+            </Link>
+          </header>
+
+          <section className="grid min-h-[calc(100svh-110px)] gap-14 py-14 lg:grid-cols-[1fr_420px] lg:items-center lg:py-16">
+            <div className="space-y-8">
+              <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#6f685f]">
+                Clear macro tracking
               </p>
 
-              <div className="mt-7 flex flex-wrap gap-3">
+              <div className="space-y-5">
+                <h1 className="max-w-2xl text-balance text-4xl font-medium leading-[0.92] tracking-[-0.07em] text-[#151515] sm:text-5xl lg:text-[4.4rem]">
+                  A simpler way to stay on top of your nutrition.
+                </h1>
+                <p className="max-w-xl text-lg leading-8 text-[#5f5a53]">
+                  Log meals quickly, stay on target, and keep calories, protein,
+                  carbs, and fats easy to read every day.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Link
-                  className="rounded-xl bg-linear-to-r from-blue-600 via-indigo-600 to-violet-600 px-5 py-2.5 text-sm font-semibold text-white shadow-[0_14px_34px_rgba(79,70,229,0.35)] transition hover:-translate-y-0.5 hover:brightness-110"
                   href="/auth"
+                  className="inline-flex items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-medium text-[#f4efe7] transition-transform duration-200 hover:-translate-y-0.5"
                 >
-                  Get started now
+                  Start free
                 </Link>
                 <Link
-                  className="rounded-xl border border-slate-200/90 bg-white/92 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                  href="/history"
+                  href="/today"
+                  className="inline-flex items-center justify-center rounded-full border border-black/10 px-6 py-3 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
                 >
-                  Explore history
+                  See dashboard
                 </Link>
-                <Link
-                  className="rounded-xl border border-slate-200/90 bg-white/92 px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100"
-                  href="/profile"
-                >
-                  Set my goals
-                </Link>
+              </div>
+
+              <div className="grid gap-3 sm:grid-cols-3">
+                {heroHighlights.map((item) => (
+                  <StatCard key={item.label} value={item.value} label={item.label} />
+                ))}
               </div>
             </div>
 
-            <div className="rounded-3xl border border-white/70 bg-slate-950/88 p-4 shadow-[0_22px_48px_rgba(15,23,42,0.35)]">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-4">
-                <p className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-300">
-                  Dashboard preview
-                </p>
-                <p className="mt-1 text-xl font-semibold text-white">
-                  Today
-                </p>
-                <div className="mt-4 space-y-3">
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs text-slate-300">
-                      <span>Kcal</span>
-                      <span>1760 / 2200</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10">
-                      <div className="h-2 w-[80%] rounded-full bg-linear-to-r from-sky-400 to-blue-500" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs text-slate-300">
-                      <span>Protein</span>
-                      <span>122g / 140g</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10">
-                      <div className="h-2 w-[87%] rounded-full bg-linear-to-r from-emerald-400 to-cyan-400" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs text-slate-300">
-                      <span>Carbs</span>
-                      <span>186g / 240g</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10">
-                      <div className="h-2 w-[78%] rounded-full bg-linear-to-r from-amber-300 to-orange-400" />
-                    </div>
-                  </div>
-                  <div className="space-y-1.5">
-                    <div className="flex justify-between text-xs text-slate-300">
-                      <span>Fat</span>
-                      <span>58g / 70g</span>
-                    </div>
-                    <div className="h-2 rounded-full bg-white/10">
-                      <div className="h-2 w-[83%] rounded-full bg-linear-to-r from-violet-400 to-fuchsia-400" />
-                    </div>
-                  </div>
+            <div className="rounded-[30px] border border-black/8 bg-white/72 p-6 shadow-[0_24px_60px_rgba(21,21,21,0.08)] backdrop-blur-xl">
+              <div className="flex items-start justify-between gap-4 border-b border-black/8 pb-5">
+                <div>
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-[#7a736b]">
+                    Daily dashboard
+                  </p>
+                  <p className="mt-3 text-3xl font-medium tracking-[-0.05em] text-[#151515]">
+                    Today
+                  </p>
+                </div>
+                <div className="rounded-full bg-[#dde7d9] px-3 py-1 text-xs font-medium text-[#365141]">
+                  On track
                 </div>
               </div>
 
-              <div className="mt-3 grid grid-cols-3 gap-2 text-center">
-                <div className="rounded-xl border border-white/10 bg-white/4 p-2">
-                  <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                    add
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
-                    &lt; 30 sec
-                  </p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/4 p-2">
-                  <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                    edit
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
-                    instant
-                  </p>
-                </div>
-                <div className="rounded-xl border border-white/10 bg-white/4 p-2">
-                  <p className="text-[11px] uppercase tracking-wide text-slate-400">
-                    view
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-white">
-                    clear
-                  </p>
-                </div>
+              <div className="space-y-5 pt-5">
+                {previewRows.map((row) => (
+                  <div key={row.label} className="space-y-2.5">
+                    <div className="flex items-center justify-between text-sm text-[#5f5a53]">
+                      <span>{row.label}</span>
+                      <span className="text-[#151515]">{row.value}</span>
+                    </div>
+                    <div className="h-3 rounded-full bg-black/6">
+                      <div
+                        className="h-3 rounded-full"
+                        style={{ width: row.width, backgroundColor: row.color }}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
             </div>
-          </div>
+          </section>
+
+          <section id="features" className="border-t border-black/8 py-20 sm:py-24">
+            <div className="space-y-10">
+              <div className="max-w-2xl space-y-4">
+                <SectionLabel>Features</SectionLabel>
+                <h2 className="text-balance text-3xl font-medium tracking-[-0.05em] text-[#151515] sm:text-4xl">
+                  Everything important stays clear.
+                </h2>
+                <p className="text-base leading-8 text-[#5f5a53]">
+                  MacroTrackr is designed to help you move faster, stay oriented, and keep the habit light enough to repeat every day.
+                </p>
+              </div>
+
+              <div className="grid gap-4 lg:grid-cols-3">
+                {features.map((feature) => (
+                  <FeatureCard
+                    key={feature.title}
+                    label={feature.label}
+                    title={feature.title}
+                    body={feature.body}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          <section className="border-t border-black/8 py-20">
+            <div className="flex flex-col gap-8 rounded-[30px] border border-black/8 bg-white/72 px-6 py-8 shadow-[0_20px_40px_rgba(21,21,21,0.06)] sm:px-8 lg:flex-row lg:items-end lg:justify-between">
+              <div className="max-w-xl space-y-4">
+                <SectionLabel>Start now</SectionLabel>
+                <h2 className="text-balance text-3xl font-medium tracking-[-0.05em] text-[#151515] sm:text-4xl">
+                  Keep your nutrition routine clear from the first meal to the last.
+                </h2>
+                <p className="text-base leading-8 text-[#5f5a53]">
+                  Set your targets, log quickly, and stay on top of the day without adding more noise.
+                </p>
+              </div>
+
+              <div className="flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/auth"
+                  className="inline-flex items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-medium text-[#f4efe7] transition-transform duration-200 hover:-translate-y-0.5"
+                >
+                  Create account
+                </Link>
+                <Link
+                  href="/today"
+                  className="inline-flex items-center justify-center rounded-full border border-black/10 px-6 py-3 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
+                >
+                  View product
+                </Link>
+              </div>
+            </div>
+          </section>
         </div>
-      </section>
-
-      <section className="grid gap-3 md:grid-cols-3">
-        <article className="group rounded-2xl border border-white/70 bg-white/82 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(15,23,42,0.14)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-blue-600">
-            Step 1
-          </p>
-          <h2 className="mt-2 text-lg font-semibold text-slate-900">
-            Add your meals
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            AI or manual, meals are saved instantly for a frictionless flow.
-          </p>
-        </article>
-
-        <article className="group rounded-2xl border border-white/70 bg-white/82 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(15,23,42,0.14)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-indigo-600">
-            Step 2
-          </p>
-          <h2 className="mt-2 text-lg font-semibold text-slate-900">
-            Set your goals
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            Define calories, protein, carbs, and fat to keep a simple,
-            measurable target.
-          </p>
-        </article>
-
-        <article className="group rounded-2xl border border-white/70 bg-white/82 p-5 shadow-[0_12px_30px_rgba(15,23,42,0.08)] backdrop-blur transition hover:-translate-y-0.5 hover:shadow-[0_18px_38px_rgba(15,23,42,0.14)]">
-          <p className="text-xs font-semibold uppercase tracking-wide text-violet-600">
-            Step 3
-          </p>
-          <h2 className="mt-2 text-lg font-semibold text-slate-900">
-            Track your progress
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-slate-600">
-            See your history and update each meal from the dashboard in seconds.
-          </p>
-        </article>
-      </section>
-    </main>
-  );
+      </main>
+    </>
+  )
 }
+
+function SectionLabel({ children }: { children: React.ReactNode }) {
+  return (
+    <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#7a736b]">
+      {children}
+    </p>
+  )
+}
+
+function StatCard({ value, label }: { value: string; label: string }) {
+  return (
+    <div className="rounded-[24px] border border-black/8 bg-white/60 p-4 backdrop-blur-xl">
+      <p className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">{value}</p>
+      <p className="mt-2 text-sm leading-6 text-[#5f5a53]">{label}</p>
+    </div>
+  )
+}
+
+function FeatureCard({
+  label,
+  title,
+  body,
+}: {
+  label: string
+  title: string
+  body: string
+}) {
+  return (
+    <div className="rounded-[28px] border border-black/8 bg-white/64 p-6 backdrop-blur-xl">
+      <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">
+        {label}
+      </p>
+      <h3 className="mt-5 max-w-[16ch] text-2xl font-medium leading-[1.05] tracking-[-0.05em] text-[#151515]">
+        {title}
+      </h3>
+      <p className="mt-4 max-w-[28ch] text-sm leading-7 text-[#5f5a53]">{body}</p>
+    </div>
+  )
+}
+

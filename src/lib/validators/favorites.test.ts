@@ -41,3 +41,4 @@ describe("logFromTemplateSchema", () => {
     expect(parsed.success).toBe(false);
   });
 });
+

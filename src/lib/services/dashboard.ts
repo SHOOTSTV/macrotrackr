@@ -81,3 +81,4 @@ export async function getRangeDashboard(
 
   return { from, to, days, meals };
 }
+

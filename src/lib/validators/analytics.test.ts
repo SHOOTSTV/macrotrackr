@@ -27,3 +27,4 @@ describe("macroAlertEventSchema", () => {
     expect(parsed.success).toBe(false);
   });
 });
+

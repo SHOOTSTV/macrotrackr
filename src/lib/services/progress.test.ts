@@ -20,7 +20,7 @@ describe("computeCurrentStreak", () => {
     expect(streak).toBe(2);
   });
 
-  it("returns zero when a day was missed before today", () => {
+  it("returns zero when neither today nor yesterday has a validated meal", () => {
     const streak = computeCurrentStreak(["2026-03-01"], "2026-03-03");
 
     expect(streak).toBe(0);
@@ -82,4 +82,27 @@ describe("recalculateProgress", () => {
       weeklyGoalHit: true,
     });
   });
+
+  it("clamps weekly target to [1..7]", () => {
+    const tooLow = recalculateProgress({
+      validatedDays: [],
+      today: "2026-03-03",
+      weekStart: "2026-03-01",
+      weekEnd: "2026-03-07",
+      weeklyTarget: 0,
+    });
+
+    const tooHigh = recalculateProgress({
+      validatedDays: ["2026-03-01", "2026-03-02", "2026-03-03", "2026-03-04", "2026-03-05"],
+      today: "2026-03-05",
+      weekStart: "2026-03-01",
+      weekEnd: "2026-03-07",
+      weeklyTarget: 99,
+    });
+
+    expect(tooLow.weeklyTarget).toBe(1);
+    expect(tooHigh.weeklyTarget).toBe(7);
+    expect(tooHigh.weeklyGoalHit).toBe(false);
+  });
 });
+

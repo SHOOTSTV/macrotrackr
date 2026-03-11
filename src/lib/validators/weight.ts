@@ -12,3 +12,4 @@ export const weightRangeQuerySchema = z.object({
   path: ["from"],
   message: "'from' must be before or equal to 'to'",
 });
+

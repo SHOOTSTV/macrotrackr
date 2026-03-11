@@ -4,6 +4,30 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+### Added
+- SEO baseline setup: metadata templates, sitemap, robots directives, and dynamic Open Graph image routes (PR [#32](https://github.com/SHOOTSTV/macrotrackr/pull/32)).
+- Branded Open Graph fallback image for social previews (PR [#35](https://github.com/SHOOTSTV/macrotrackr/pull/35)).
+
+### Fixed
+- Embedded-browser fallback flow for sign-in reliability (PR [#24](https://github.com/SHOOTSTV/macrotrackr/pull/24)).
+- Open Graph fallback rendering and social preview compatibility (PRs [#34](https://github.com/SHOOTSTV/macrotrackr/pull/34), [#35](https://github.com/SHOOTSTV/macrotrackr/pull/35)).
+
+### Changed
+- CI workflow now uses pnpm with a clearer quality-gate pipeline (PR [#30](https://github.com/SHOOTSTV/macrotrackr/pull/30)).
+- Expanded services test coverage for progress and weight edge cases (PR [#25](https://github.com/SHOOTSTV/macrotrackr/pull/25)).
+
+## [1.4.0] - 2026-03-11
+
+### Added
+- Refreshed the marketing landing page, shared shell, dashboard, and profile flows into a more cohesive premium product experience.
+- Redesigned Today, History, auth, onboarding, and profile surfaces with updated goals and weight trend presentation.
+
+### Fixed
+- Prevented private authenticated routes from being indexed and removed private URLs from sitemap output.
+
+### Changed
+- Updated landing page metadata, shared navigation styling, and repository support files for release hygiene.
+
 ## [1.3.0] - 2026-03-06
 
 ### Added
@@ -41,3 +65,4 @@ All notable changes to this project will be documented in this file.
 ### Changed
 - Progress recalculation now syncs after relevant meal operations.
 - Added release QA checklist for streak/weekly rollout validation.
+

@@ -60,6 +60,25 @@ function groupMealsByDay(meals: Meal[]): DayGroup[] {
   return Array.from(groups.values()).sort((a, b) => b.dayKey.localeCompare(a.dayKey));
 }
 
+function ChevronIcon() {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width="16"
+      height="16"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m6 9 6 6 6-6" />
+    </svg>
+  )
+}
+
 export function HistoryDayGroups({ meals, goals }: HistoryDayGroupsProps) {
   const router = useRouter();
   const [deletingDayKey, setDeletingDayKey] = useState<string | null>(null);
@@ -106,105 +125,158 @@ export function HistoryDayGroups({ meals, goals }: HistoryDayGroupsProps) {
 
   return (
     <div className="space-y-4">
-      {dayGroups.map((group) => (
-        <Card key={group.dayKey} className="space-y-3">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h3 className="text-lg font-semibold text-slate-900">
-              {format(new Date(group.dayKey), "dd/MM/yyyy")}
-            </h3>
-            <div className="flex flex-wrap items-center gap-2 text-xs">
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-lg bg-blue-50 px-2 py-1 text-blue-700">
-                  <span className="font-medium uppercase tracking-wide">kcal</span>{" "}
-                  <span className="font-semibold">{group.totals.kcal.toFixed(0)}</span>
-                </span>
-                <span className="rounded-lg bg-cyan-50 px-2 py-1 text-cyan-700">
-                  <span className="font-medium uppercase tracking-wide">protein</span>{" "}
-                  <span className="font-semibold">{group.totals.protein.toFixed(1)}g</span>
-                </span>
-                <span className="rounded-lg bg-amber-50 px-2 py-1 text-amber-700">
-                  <span className="font-medium uppercase tracking-wide">carbs</span>{" "}
-                  <span className="font-semibold">{group.totals.carbs.toFixed(1)}g</span>
-                </span>
-                <span className="rounded-lg bg-violet-50 px-2 py-1 text-violet-700">
-                  <span className="font-medium uppercase tracking-wide">fat</span>{" "}
-                  <span className="font-semibold">{group.totals.fat.toFixed(1)}g</span>
-                </span>
+      {dayGroups.map((group, index) => (
+        <details
+          key={group.dayKey}
+          open={index === 0}
+          className="group rounded-[28px] border border-black/8 bg-white/72 shadow-[0_18px_36px_rgba(21,21,21,0.05)] backdrop-blur-xl"
+        >
+          <summary className="list-none cursor-pointer p-5 sm:p-6 [&::-webkit-details-marker]:hidden">
+            <div className="flex flex-wrap items-center justify-between gap-4">
+              <div className="space-y-2">
+                <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">
+                  {format(new Date(group.dayKey), "EEEE")}
+                </p>
+                <h3 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">
+                  {format(new Date(group.dayKey), "MMMM d, yyyy")}
+                </h3>
+                <p className="text-sm text-[#6f685f]">
+                  {group.meals.length} meal{group.meals.length === 1 ? "" : "s"} logged
+                </p>
               </div>
-              <Button
-                variant="ghost"
-                onClick={() => onDeleteDay(group.dayKey)}
-                disabled={deletingDayKey === group.dayKey}
-                className="border-red-200 text-red-600 hover:bg-red-50 hover:text-red-700"
-              >
-                {deletingDayKey === group.dayKey ? "Deleting..." : "Delete day"}
-              </Button>
+
+              <div className="flex items-center gap-3">
+                <div className="hidden flex-wrap gap-2 sm:flex">
+                  <span className="rounded-full bg-[#edf1ea] px-3 py-1.5 text-xs text-[#365141]">
+                    <span className="font-medium uppercase tracking-wide">kcal</span>{" "}
+                    <span className="font-semibold">{group.totals.kcal.toFixed(0)}</span>
+                  </span>
+                  <span className="rounded-full bg-[#e4ece9] px-3 py-1.5 text-xs text-[#44747b]">
+                    <span className="font-medium uppercase tracking-wide">protein</span>{" "}
+                    <span className="font-semibold">{group.totals.protein.toFixed(1)}g</span>
+                  </span>
+                  <span className="rounded-full bg-[#f2eadb] px-3 py-1.5 text-xs text-[#7a5b33]">
+                    <span className="font-medium uppercase tracking-wide">carbs</span>{" "}
+                    <span className="font-semibold">{group.totals.carbs.toFixed(1)}g</span>
+                  </span>
+                  <span className="rounded-full bg-[#ece7f0] px-3 py-1.5 text-xs text-[#66557e]">
+                    <span className="font-medium uppercase tracking-wide">fat</span>{" "}
+                    <span className="font-semibold">{group.totals.fat.toFixed(1)}g</span>
+                  </span>
+                </div>
+
+                <div className="flex h-10 w-10 items-center justify-center rounded-full border border-black/8 bg-[#f8f4ee] text-[#5f5a53] transition duration-200 group-open:rotate-180">
+                  <ChevronIcon />
+                </div>
+              </div>
+            </div>
+          </summary>
+
+          <div className="border-t border-black/6 px-5 pb-5 pt-5 sm:px-6 sm:pb-6 sm:pt-6">
+            <div className="space-y-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-2 sm:hidden">
+                  <span className="rounded-full bg-[#edf1ea] px-3 py-1.5 text-xs text-[#365141]">
+                    <span className="font-medium uppercase tracking-wide">kcal</span>{" "}
+                    <span className="font-semibold">{group.totals.kcal.toFixed(0)}</span>
+                  </span>
+                  <span className="rounded-full bg-[#e4ece9] px-3 py-1.5 text-xs text-[#44747b]">
+                    <span className="font-medium uppercase tracking-wide">protein</span>{" "}
+                    <span className="font-semibold">{group.totals.protein.toFixed(1)}g</span>
+                  </span>
+                  <span className="rounded-full bg-[#f2eadb] px-3 py-1.5 text-xs text-[#7a5b33]">
+                    <span className="font-medium uppercase tracking-wide">carbs</span>{" "}
+                    <span className="font-semibold">{group.totals.carbs.toFixed(1)}g</span>
+                  </span>
+                  <span className="rounded-full bg-[#ece7f0] px-3 py-1.5 text-xs text-[#66557e]">
+                    <span className="font-medium uppercase tracking-wide">fat</span>{" "}
+                    <span className="font-semibold">{group.totals.fat.toFixed(1)}g</span>
+                  </span>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  onClick={() => onDeleteDay(group.dayKey)}
+                  disabled={deletingDayKey === group.dayKey}
+                  className="border-[#e9c7bf] text-[#8a3d30] hover:bg-[#f5dfdb] hover:text-[#7d3428]"
+                >
+                  {deletingDayKey === group.dayKey ? "Deleting..." : "Delete day"}
+                </Button>
+              </div>
+
+              {deleteDayError && deletingDayKey === null ? (
+                <p className="text-sm text-[#8a3d30]">{deleteDayError}</p>
+              ) : null}
+
+              <div className="rounded-[24px] border border-black/6 bg-[#f8f4ee] p-5">
+                <GoalsProgressCard
+                  title="Goal progress"
+                  consumed={{
+                    kcal: group.totals.kcal,
+                    protein: group.totals.protein,
+                    carbs: group.totals.carbs,
+                    fat: group.totals.fat,
+                  }}
+                  goals={goals}
+                  embedded
+                />
+              </div>
+
+              <div className="space-y-3">
+                {group.meals.map((meal) => (
+                  <div
+                    key={meal.id}
+                    className="relative overflow-hidden rounded-[24px] border border-black/6 bg-[#f8f4ee] p-4"
+                  >
+                    <div className="pointer-events-none absolute inset-x-6 top-0 h-px bg-linear-to-r from-transparent via-[#b8cae6] to-transparent" />
+                    <div className="flex flex-wrap items-start justify-between gap-4">
+                      <div className="space-y-3">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-[#f1ebe2] px-2.5 py-1 text-[11px] font-medium uppercase tracking-[0.22em] text-[#6f685f]">
+                            {meal.meal_type}
+                          </span>
+                          <span className="text-sm text-[#7a736b]">{format(new Date(meal.eaten_at), "HH:mm")}</span>
+                        </div>
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          <p className="text-[1.05rem] font-medium tracking-[-0.04em] text-[#151515]">{meal.title}</p>
+                          <Badge>{meal.author}</Badge>
+                          {meal.low_confidence ? <Badge variant="warning">low_confidence</Badge> : null}
+                        </div>
+                      </div>
+                      <EditMealModal meal={meal} onUpdated={async () => router.refresh()} triggerClassName="bg-white hover:bg-[#efe7dc]" />
+                    </div>
+
+                    <div className="mt-4 grid gap-2 sm:grid-cols-2 xl:grid-cols-4">
+                      <p className="rounded-xl bg-[#edf1ea] px-3 py-2 text-xs text-[#365141]">
+                        <span className="font-medium uppercase tracking-wide">kcal</span>{" "}
+                        <span className="text-sm font-semibold">{meal.kcal}</span>
+                      </p>
+                      <p className="rounded-xl bg-[#e4ece9] px-3 py-2 text-xs text-[#44747b]">
+                        <span className="font-medium uppercase tracking-wide">protein</span>{" "}
+                        <span className="text-sm font-semibold">{meal.protein_g}g</span>
+                      </p>
+                      <p className="rounded-xl bg-[#f2eadb] px-3 py-2 text-xs text-[#7a5b33]">
+                        <span className="font-medium uppercase tracking-wide">carbs</span>{" "}
+                        <span className="text-sm font-semibold">{meal.carbs_g}g</span>
+                      </p>
+                      <p className="rounded-xl bg-[#ece7f0] px-3 py-2 text-xs text-[#66557e]">
+                        <span className="font-medium uppercase tracking-wide">fat</span>{" "}
+                        <span className="text-sm font-semibold">{meal.fat_g}g</span>
+                      </p>
+                    </div>
+                    {meal.notes?.trim() ? (
+                      <p className="mt-3 rounded-xl border border-black/8 bg-[#ede7de] px-3 py-2.5 text-sm leading-6 text-[#4f4a43]">
+                        <span className="mr-1 font-semibold text-[#151515]">Description:</span>
+                        {meal.notes}
+                      </p>
+                    ) : null}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
-          {deleteDayError && deletingDayKey === null ? (
-            <p className="text-sm text-red-600">{deleteDayError}</p>
-          ) : null}
-
-          <div className="space-y-2">
-            <GoalsProgressCard
-              title="Goal progress"
-              consumed={{
-                kcal: group.totals.kcal,
-                protein: group.totals.protein,
-                carbs: group.totals.carbs,
-                fat: group.totals.fat,
-              }}
-              goals={goals}
-            />
-            {group.meals.map((meal) => (
-              <div key={meal.id} className="rounded-xl border border-slate-100 bg-white/80 p-2.5">
-                <div className="flex flex-wrap items-center justify-between gap-3">
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <p className="text-base font-semibold text-slate-900">{meal.title}</p>
-                      <Badge>{meal.author}</Badge>
-                      {meal.low_confidence ? (
-                        <Badge variant="warning">low_confidence</Badge>
-                      ) : null}
-                    </div>
-                    <p className="text-sm text-slate-500">
-                      {meal.meal_type} - {format(new Date(meal.eaten_at), "HH:mm")}
-                    </p>
-                  </div>
-                  <EditMealModal
-                    meal={meal}
-                    onUpdated={async () => router.refresh()}
-                  />
-                </div>
-
-                <div className="mt-1.5 grid grid-cols-2 gap-2 text-sm md:grid-cols-4">
-                  <p className="rounded-lg bg-blue-50 px-2 py-1 text-xs text-blue-700">
-                    <span className="font-medium uppercase tracking-wide">kcal</span>{" "}
-                    <span className="text-sm font-semibold">{meal.kcal}</span>
-                  </p>
-                  <p className="rounded-lg bg-cyan-50 px-2 py-1 text-cyan-700">
-                    <span className="font-medium uppercase tracking-wide">protein</span>{" "}
-                    <span className="text-sm font-semibold">{meal.protein_g}g</span>
-                  </p>
-                  <p className="rounded-lg bg-amber-50 px-2 py-1 text-amber-700">
-                    <span className="font-medium uppercase tracking-wide">carbs</span>{" "}
-                    <span className="text-sm font-semibold">{meal.carbs_g}g</span>
-                  </p>
-                  <p className="rounded-lg bg-violet-50 px-2 py-1 text-violet-700">
-                    <span className="font-medium uppercase tracking-wide">fat</span>{" "}
-                    <span className="text-sm font-semibold">{meal.fat_g}g</span>
-                  </p>
-                </div>
-                {meal.notes?.trim() ? (
-                  <p className="mt-2 rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-sm text-slate-700">
-                    <span className="mr-1 font-semibold text-slate-900">Description:</span>
-                    {meal.notes}
-                  </p>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        </Card>
+        </details>
       ))}
     </div>
   );

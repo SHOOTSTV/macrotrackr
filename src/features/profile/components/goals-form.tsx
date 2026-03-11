@@ -7,13 +7,34 @@ import { getAuthHeaders } from "@/src/lib/auth/client-auth";
 import { Button } from "@/src/components/ui/button";
 import { Card } from "@/src/components/ui/card";
 import { Input } from "@/src/components/ui/input";
+import { cn } from "@/src/lib/utils";
 import type { NutritionGoalsInput } from "@/src/types/profile";
 
 interface GoalsFormProps {
   initialGoals: NutritionGoalsInput;
+  embedded?: boolean;
 }
 
-export function GoalsForm({ initialGoals }: GoalsFormProps) {
+const FIELD_STYLES = {
+  calories: {
+    accent: "bg-[#93c5fd]",
+    note: "kcal per day",
+  },
+  protein: {
+    accent: "bg-[#7dd3fc]",
+    note: "grams per day",
+  },
+  carbs: {
+    accent: "bg-[#b6a7e8]",
+    note: "grams per day",
+  },
+  fat: {
+    accent: "bg-[#97b08f]",
+    note: "grams per day",
+  },
+} as const;
+
+export function GoalsForm({ initialGoals, embedded = false }: GoalsFormProps) {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
   const [loadingGoals, setLoadingGoals] = useState(true);
@@ -128,34 +149,56 @@ export function GoalsForm({ initialGoals }: GoalsFormProps) {
     }
   }
 
-  return (
-    <Card className="max-w-2xl">
-      <h1 className="mb-1 text-2xl font-bold text-slate-900">Nutrition goals</h1>
-      <p className="mb-4 text-sm text-slate-600">
-        Define daily targets to display progress bars for each day.
-      </p>
+  const content = (
+    <div className={cn("space-y-5", embedded ? "" : "max-w-2xl")}>
+      {!embedded ? (
+        <div className="space-y-2">
+          <h1 className="text-2xl font-medium tracking-[-0.05em] text-[#151515]">Nutrition goals</h1>
+          <p className="text-sm leading-7 text-[#6f685f]">
+            Define daily targets to keep your dashboard progress bars accurate and readable.
+          </p>
+        </div>
+      ) : (
+        <div className="space-y-2">
+          <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">
+            Edit targets
+          </p>
+          <p className="text-sm leading-7 text-[#6f685f]">
+            Adjust your daily calories and macro targets here. Changes update the rest of the app right away.
+          </p>
+        </div>
+      )}
 
-      <form className="space-y-3" onSubmit={onSubmit}>
+      <form className="space-y-4" onSubmit={onSubmit}>
         {loadingGoals ? (
-          <p className="text-sm text-slate-500">Loading goals...</p>
+          <p className="text-sm text-[#7a736b]">Loading goals...</p>
         ) : null}
 
-        <label htmlFor="kcal-target" className="block space-y-1 text-sm text-slate-700">
-          <span className="font-medium">Calorie target (kcal / day)</span>
-          <Input
-            id="kcal-target"
-            type="number"
-            min={0}
-            step="1"
-            value={kcalTarget}
-            onChange={(event) => setKcalTarget(event.target.value)}
-            placeholder="Ex: 2200"
-            required
-          />
-        </label>
-        <div className="grid gap-2 md:grid-cols-3">
-          <label htmlFor="protein-target" className="block space-y-1 text-sm text-slate-700">
-            <span className="font-medium">Protein target (g / day)</span>
+        <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          <label htmlFor="kcal-target" className="block rounded-[22px] border border-black/6 bg-white/76 p-4 text-sm text-[#4f4a43]">
+            <span className={`mb-3 block h-1.5 w-14 rounded-full ${FIELD_STYLES.calories.accent}`} />
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">
+              Calories
+            </span>
+            <Input
+              id="kcal-target"
+              type="number"
+              min={0}
+              step="1"
+              value={kcalTarget}
+              onChange={(event) => setKcalTarget(event.target.value)}
+              placeholder="2200"
+              required
+              className="mt-3 bg-white"
+            />
+            <p className="mt-3 text-xs text-[#847c73]">{FIELD_STYLES.calories.note}</p>
+          </label>
+
+          <label htmlFor="protein-target" className="block rounded-[22px] border border-black/6 bg-white/76 p-4 text-sm text-[#4f4a43]">
+            <span className={`mb-3 block h-1.5 w-14 rounded-full ${FIELD_STYLES.protein.accent}`} />
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">
+              Protein
+            </span>
             <Input
               id="protein-target"
               type="number"
@@ -163,12 +206,18 @@ export function GoalsForm({ initialGoals }: GoalsFormProps) {
               step="0.1"
               value={proteinTarget}
               onChange={(event) => setProteinTarget(event.target.value)}
-              placeholder="Ex: 140"
+              placeholder="140"
               required
+              className="mt-3 bg-white"
             />
+            <p className="mt-3 text-xs text-[#847c73]">{FIELD_STYLES.protein.note}</p>
           </label>
-          <label htmlFor="carbs-target" className="block space-y-1 text-sm text-slate-700">
-            <span className="font-medium">Carbs target (g / day)</span>
+
+          <label htmlFor="carbs-target" className="block rounded-[22px] border border-black/6 bg-white/76 p-4 text-sm text-[#4f4a43]">
+            <span className={`mb-3 block h-1.5 w-14 rounded-full ${FIELD_STYLES.carbs.accent}`} />
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">
+              Carbs
+            </span>
             <Input
               id="carbs-target"
               type="number"
@@ -176,12 +225,18 @@ export function GoalsForm({ initialGoals }: GoalsFormProps) {
               step="0.1"
               value={carbsTarget}
               onChange={(event) => setCarbsTarget(event.target.value)}
-              placeholder="Ex: 250"
+              placeholder="250"
               required
+              className="mt-3 bg-white"
             />
+            <p className="mt-3 text-xs text-[#847c73]">{FIELD_STYLES.carbs.note}</p>
           </label>
-          <label htmlFor="fat-target" className="block space-y-1 text-sm text-slate-700">
-            <span className="font-medium">Fat target (g / day)</span>
+
+          <label htmlFor="fat-target" className="block rounded-[22px] border border-black/6 bg-white/76 p-4 text-sm text-[#4f4a43]">
+            <span className={`mb-3 block h-1.5 w-14 rounded-full ${FIELD_STYLES.fat.accent}`} />
+            <span className="text-[11px] font-medium uppercase tracking-[0.22em] text-[#7a736b]">
+              Fat
+            </span>
             <Input
               id="fat-target"
               type="number"
@@ -189,19 +244,34 @@ export function GoalsForm({ initialGoals }: GoalsFormProps) {
               step="0.1"
               value={fatTarget}
               onChange={(event) => setFatTarget(event.target.value)}
-              placeholder="Ex: 70"
+              placeholder="70"
               required
+              className="mt-3 bg-white"
             />
+            <p className="mt-3 text-xs text-[#847c73]">{FIELD_STYLES.fat.note}</p>
           </label>
         </div>
 
-        {error ? <p className="text-sm text-red-600">{error}</p> : null}
-        {success ? <p className="text-sm text-emerald-600">{success}</p> : null}
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-[22px] border border-black/6 bg-white/62 px-4 py-3.5">
+          <div className="space-y-1 text-sm">
+            {error ? <p className="text-[#8a3d30]">{error}</p> : null}
+            {success ? <p className="text-[#365141]">{success}</p> : null}
+            {!error && !success ? (
+              <p className="text-[#6f685f]">Use targets that are realistic enough to follow every day.</p>
+            ) : null}
+          </div>
 
-        <Button type="submit" disabled={loading}>
-          {loading ? "Saving..." : "Save my goals"}
-        </Button>
+          <Button type="submit" disabled={loading}>
+            {loading ? "Saving..." : "Save targets"}
+          </Button>
+        </div>
       </form>
-    </Card>
+    </div>
   );
+
+  if (embedded) {
+    return content;
+  }
+
+  return <Card>{content}</Card>;
 }

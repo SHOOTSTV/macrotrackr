@@ -43,3 +43,4 @@ export async function DELETE(request: NextRequest) {
     return serverError(error instanceof Error ? error.message : undefined);
   }
 }
+
