@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist_Mono, Jost } from "next/font/google";
 
 import { SonnerToaster } from "@/src/components/ui/sonner";
+import { siteConfig } from "@/src/lib/site";
 import "./globals.css";
 
 const jost = Jost({
@@ -16,13 +17,12 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://macrotrackr.vercel.app"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: "AI Macro Tracker for Meal Logging",
+    default: siteConfig.title,
     template: "%s | MacroTrackr",
   },
-  description:
-    "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
+  description: siteConfig.description,
   alternates: {
     canonical: "/",
   },
@@ -33,29 +33,23 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     url: "/",
-    siteName: "MacroTrackr",
-    title: "AI Macro Tracker for Meal Logging",
-    description:
-      "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
     images: [
       {
-        url: "/og-image-fallback.jpg",
+        url: siteConfig.ogImage,
         width: 1200,
         height: 630,
-      },
-      {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        alt: siteConfig.title,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "AI Macro Tracker for Meal Logging",
-    description:
-      "Track macros and calories with an AI macro tracker built for fast meal logging, simple nutrition goals, and clear daily progress.",
-    images: ["/og-image-fallback.jpg"],
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
 };
 

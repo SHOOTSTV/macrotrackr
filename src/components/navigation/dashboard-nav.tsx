@@ -8,7 +8,6 @@ import { supabaseBrowser } from "@/src/lib/supabase/browser";
 import { cn } from "@/src/lib/utils";
 
 const navItems = [
-  { href: "/", label: "Home" },
   { href: "/today", label: "Today" },
   { href: "/history", label: "History" },
   { href: "/profile", label: "Profile" },
