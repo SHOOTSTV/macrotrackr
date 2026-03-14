@@ -2,34 +2,82 @@ import type { Metadata } from "next"
 import { Jost } from "next/font/google"
 import Link from "next/link"
 
+import { PublicFooter } from "@/src/components/navigation/public-footer"
+import { siteConfig } from "@/src/lib/site"
+
 const jost = Jost({
   subsets: ["latin"],
   weight: ["300", "400", "500", "600"],
 })
 
 export const metadata: Metadata = {
-  title: "MacroTrackr | Clear macro tracking, every day",
-  description:
-    "MacroTrackr helps you log meals quickly, stay on target, and keep your nutrition routine clear without extra noise.",
+  title: {
+    absolute: siteConfig.title,
+  },
+  description: siteConfig.description,
   alternates: {
     canonical: "/",
+  },
+  openGraph: {
+    type: "website",
+    url: "/",
+    siteName: siteConfig.name,
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [
+      {
+        url: siteConfig.ogImage,
+        width: 1200,
+        height: 630,
+        alt: siteConfig.title,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteConfig.title,
+    description: siteConfig.description,
+    images: [siteConfig.ogImage],
   },
 }
 
 const jsonLd = {
   "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: "MacroTrackr",
-  applicationCategory: "HealthApplication",
-  operatingSystem: "Web",
-  url: "https://macrotrackr.vercel.app",
-  description:
-    "A clear nutrition dashboard for calories, protein, carbs, and fats.",
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-  },
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": `${siteConfig.url}/#organization`,
+      name: siteConfig.name,
+      url: siteConfig.url,
+    },
+    {
+      "@type": "WebSite",
+      "@id": `${siteConfig.url}/#website`,
+      url: siteConfig.url,
+      name: siteConfig.name,
+      description: siteConfig.description,
+      publisher: {
+        "@id": `${siteConfig.url}/#organization`,
+      },
+    },
+    {
+      "@type": "SoftwareApplication",
+      "@id": `${siteConfig.url}/#app`,
+      name: siteConfig.name,
+      applicationCategory: "HealthApplication",
+      operatingSystem: "Web",
+      url: siteConfig.url,
+      description: siteConfig.description,
+      publisher: {
+        "@id": `${siteConfig.url}/#organization`,
+      },
+      offers: {
+        "@type": "Offer",
+        price: "0",
+        priceCurrency: "USD",
+      },
+    },
+  ],
 }
 
 const navLinks = [{ href: "#features", label: "Features" }]
@@ -64,18 +112,6 @@ const previewRows = [
   { label: "Carbs", value: "186 g / 240 g", width: "78%", color: "#b6a7e8" },
   { label: "Fat", value: "58 g / 70 g", width: "83%", color: "#97b08f" },
 ]
-
-const meals = [
-  { name: "Greek yogurt bowl", kcal: "420", time: "08:10" },
-  { name: "Chicken rice plate", kcal: "610", time: "12:45" },
-  { name: "Salmon and potatoes", kcal: "530", time: "19:20" },
-] as const;
-
-const microStats = [
-  { label: "Logging", value: "AI or manual" },
-  { label: "Focus", value: "Calories and macros" },
-  { label: "Rhythm", value: "Goals stay visible" },
-] as const;
 
 export default function Home() {
   return (
@@ -236,6 +272,8 @@ export default function Home() {
               </div>
             </div>
           </section>
+
+          <PublicFooter />
         </div>
       </main>
     </>
