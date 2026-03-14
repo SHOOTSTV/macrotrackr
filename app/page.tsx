@@ -1,14 +1,8 @@
 import type { Metadata } from "next"
-import { Jost } from "next/font/google"
 import Link from "next/link"
 
 import { PublicFooter } from "@/src/components/navigation/public-footer"
 import { siteConfig } from "@/src/lib/site"
-
-const jost = Jost({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-})
 
 export const metadata: Metadata = {
   title: {
@@ -120,7 +114,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <main className={`${jost.className} min-h-screen bg-[#f4efe7] text-[#151515]`}>
+      <main className="min-h-screen bg-[#f4efe7] text-[#151515]">
         <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-6 sm:px-6 lg:px-8">
           <header className="flex items-center justify-between border-b border-black/8 pb-5">
             <Link href="/" className="text-lg font-medium tracking-[-0.04em] text-[#151515]">
@@ -141,6 +135,7 @@ export default function Home() {
 
             <Link
               href="/auth"
+              prefetch={false}
               className="rounded-full border border-black/10 px-4 py-2 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
             >
               Sign in
@@ -166,12 +161,14 @@ export default function Home() {
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <Link
                   href="/auth"
+                  prefetch={false}
                   className="inline-flex items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-medium text-[#f4efe7] transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   Start free
                 </Link>
                 <Link
                   href="/today"
+                  prefetch={false}
                   className="inline-flex items-center justify-center rounded-full border border-black/10 px-6 py-3 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
                 >
                   See dashboard
@@ -188,7 +185,7 @@ export default function Home() {
             <div className="rounded-[30px] border border-black/8 bg-white/72 p-6 shadow-[0_24px_60px_rgba(21,21,21,0.08)] backdrop-blur-xl">
               <div className="flex items-start justify-between gap-4 border-b border-black/8 pb-5">
                 <div>
-                  <p className="text-[11px] uppercase tracking-[0.28em] text-[#7a736b]">
+                  <p className="text-[11px] uppercase tracking-[0.28em] text-[#655e56]">
                     Daily dashboard
                   </p>
                   <p className="mt-3 text-3xl font-medium tracking-[-0.05em] text-[#151515]">
@@ -259,12 +256,14 @@ export default function Home() {
               <div className="flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/auth"
+                  prefetch={false}
                   className="inline-flex items-center justify-center rounded-full bg-[#151515] px-6 py-3 text-sm font-medium text-[#f4efe7] transition-transform duration-200 hover:-translate-y-0.5"
                 >
                   Create account
                 </Link>
                 <Link
                   href="/today"
+                  prefetch={false}
                   className="inline-flex items-center justify-center rounded-full border border-black/10 px-6 py-3 text-sm font-medium text-[#151515] transition-colors duration-200 hover:bg-black/4"
                 >
                   View product
@@ -282,7 +281,7 @@ export default function Home() {
 
 function SectionLabel({ children }: { children: React.ReactNode }) {
   return (
-    <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#7a736b]">
+    <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-[#655e56]">
       {children}
     </p>
   )
@@ -308,7 +307,7 @@ function FeatureCard({
 }) {
   return (
     <div className="rounded-[28px] border border-black/8 bg-white/64 p-6 backdrop-blur-xl">
-      <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#7a736b]">
+      <p className="text-[11px] font-medium uppercase tracking-[0.28em] text-[#655e56]">
         {label}
       </p>
       <h3 className="mt-5 max-w-[16ch] text-2xl font-medium leading-[1.05] tracking-[-0.05em] text-[#151515]">
