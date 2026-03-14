@@ -43,6 +43,7 @@ next-env.d.ts
 
 # roadmap
 ROADMAP.md
+AGENTS.md
 
 # cursor
 .cursor/
