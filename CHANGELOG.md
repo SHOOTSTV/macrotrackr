@@ -16,6 +16,18 @@ All notable changes to this project will be documented in this file.
 - CI workflow now uses pnpm with a clearer quality-gate pipeline (PR [#30](https://github.com/SHOOTSTV/macrotrackr/pull/30)).
 - Expanded services test coverage for progress and weight edge cases (PR [#25](https://github.com/SHOOTSTV/macrotrackr/pull/25)).
 
+## [1.5.0] - 2026-03-14
+
+### Added
+- Added signup and retention funnel instrumentation events for analytics visibility.
+
+### Fixed
+- Improved manual meal entry on mobile and aligned dashboard loading states with the refreshed UI.
+- Aligned public metadata, trust pages, and auth flow semantics across the public site.
+
+### Changed
+- Ignored `AGENTS.md` in Git to keep local agent instructions out of repository diffs.
+
 ## [1.4.0] - 2026-03-11
 
 ### Added
