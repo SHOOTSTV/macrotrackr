@@ -1,5 +1,7 @@
 import type { MetadataRoute } from "next";
 
+import { siteConfig } from "@/src/lib/site";
+
 export default function robots(): MetadataRoute.Robots {
   return {
     rules: [
@@ -9,7 +11,7 @@ export default function robots(): MetadataRoute.Robots {
         disallow: ["/api/"],
       },
     ],
-    sitemap: "https://macrotrackr.vercel.app/sitemap.xml",
+    sitemap: `${siteConfig.url}/sitemap.xml`,
   };
 }
 
